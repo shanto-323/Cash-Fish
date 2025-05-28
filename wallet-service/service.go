@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,8 +17,8 @@ type Service struct {
 	publisher   *amqp.Channel
 }
 
-func NewService(repo Repository, redisClient *redis.Client, publisher *amqp.Channel, logger *log.Logger) *Service {
-	return &Service{
+func NewService(repo Repository, redisClient *redis.Client, publisher *amqp.Channel) Service {
+	return Service{
 		repo:        repo,
 		redisClient: redisClient,
 		publisher:   publisher,
