@@ -25,7 +25,7 @@ func NewService(repo Repository, redisClient *redis.Client, publisher *amqp.Chan
 	}
 }
 
-func (s *Service) CreateNewTransection(ctx context.Context, senderId, receiverId, note, idempotencyKey string, amount float64) (*TransactionModel, error) {
+func (s *Service) CreateNewTransaction(ctx context.Context, senderId, receiverId, note, idempotencyKey string, amount float64) (*TransactionModel, error) {
 	catchKey := fmt.Sprintf("IdempotencyKey:%s", idempotencyKey)
 	exits, err := s.redisClient.Get(ctx, catchKey).Result()
 	if err != nil && err != redis.Nil {
@@ -61,11 +61,11 @@ func (s *Service) CreateNewTransection(ctx context.Context, senderId, receiverId
 	return &transactionModel, nil
 }
 
-func (s *Service) GetTransection(ctx context.Context, payment_id string) (*TransactionModel, error) {
+func (s *Service) GetTransaction(ctx context.Context, payment_id string) (*TransactionModel, error) {
 	return s.repo.TransactionsStatus(ctx, payment_id)
 }
 
-func (s *Service) GetTransectionHistory(ctx context.Context, id string, limit, offset int64) (*TransactionHistoryModel, error) {
+func (s *Service) GetTransactionHistory(ctx context.Context, id string, limit, offset int64) (*TransactionHistoryModel, error) {
 	if limit < 10 || limit > 100 {
 		limit = 10
 	}

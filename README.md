@@ -3,8 +3,7 @@
 *A scalable payment processing system built with Go, PostgreSQL, RabbitMQ, and Redis, implementing event-driven architecture patterns for reliable financial transactions.*
 
 ## Getting Started
-- Go > 1.2 
-- gRPC ***(API Layer)***
-- PostgreSQL ***(Primary Database)*** 
-- Redis ***(Cache For Idempotency)***
-- RabbitMQ  ***(Event Broker)***
+- ***gRPC*** (API Layer)
+- ***PostgreSQL*** (Primary Database)
+- ***Redis*** (Idempotency & Caching)
+- ***RabbitMQ*** (Event Broker)

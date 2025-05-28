@@ -41,9 +41,9 @@ func (w *TransactionRepository) MakeTransaction(ctx context.Context, wallet Tran
 			receiver_id,
 			amount,
 			note,
-			imenpotency_key,
-			created_at,
-		)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
+			idempotency_key,
+			created_at
+		)VALUES($1,$2,$3,$4,$5,$6,$7)`,
 		wallet.ID, wallet.SenderId, wallet.ReceiverId, wallet.Amount, wallet.Note, wallet.IdempotencyKey, wallet.CreatedAt,
 	)
 	if err != nil {
@@ -62,18 +62,18 @@ func (w *TransactionRepository) TransactionsStatus(ctx context.Context, payment_
 			receiver_id,
 			amount,
 			note,
-			imenpotency_key,
+			idempotency_key,
 			created_at
 		FROM payments WHERE id = $1`,
 		payment_id,
 	).Scan(
-		transaction.ID,
-		transaction.SenderId,
-		transaction.ReceiverId,
-		transaction.Amount,
-		transaction.Note,
-		transaction.IdempotencyKey,
-		transaction.CreatedAt,
+		&transaction.ID,
+		&transaction.SenderId,
+		&transaction.ReceiverId,
+		&transaction.Amount,
+		&transaction.Note,
+		&transaction.IdempotencyKey,
+		&transaction.CreatedAt,
 	)
 	if err != nil {
 		return nil, err
@@ -91,7 +91,7 @@ func (w *TransactionRepository) TransactionsHistory(ctx context.Context, id stri
 			receiver_id,
 			amount,
 			note,
-			imenpotency_key,
+			idempotency_key,
 			created_at
 		FROM payments 
 		WHERE sender_id = $1 OR receiver_id = $1
@@ -102,18 +102,19 @@ func (w *TransactionRepository) TransactionsHistory(ctx context.Context, id stri
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	transactions := []*TransactionModel{}
 	for rows.Next() {
 		transaction := &TransactionModel{}
 		rows.Scan(
-			transaction.ID,
-			transaction.SenderId,
-			transaction.ReceiverId,
-			transaction.Amount,
-			transaction.Note,
-			transaction.IdempotencyKey,
-			transaction.CreatedAt,
+			&transaction.ID,
+			&transaction.SenderId,
+			&transaction.ReceiverId,
+			&transaction.Amount,
+			&transaction.Note,
+			&transaction.IdempotencyKey,
+			&transaction.CreatedAt,
 		)
 		transactions = append(transactions, transaction)
 	}
@@ -132,6 +133,7 @@ func (w *TransactionRepository) TotalTransaction(ctx context.Context, id string)
 		`SELECT COUNT(*)
 		FROM payments 
 		WHERE sender_id = $1 OR receiver_id = $1`,
+		id,
 	).Scan(
 		&count,
 	)

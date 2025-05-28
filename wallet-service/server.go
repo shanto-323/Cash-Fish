@@ -28,7 +28,7 @@ func ListenGRPC(s Service, port int) error {
 }
 
 func (sr *grpcServer) CreatePayment(ctx context.Context, r *pb.CreatePaymentRequest) (*pb.CreatePaymentResponse, error) {
-	resp, err := sr.service.CreateNewTransection(
+	resp, err := sr.service.CreateNewTransaction(
 		ctx,
 		r.SenderId,
 		r.ReceiverId,
@@ -48,7 +48,7 @@ func (sr *grpcServer) CreatePayment(ctx context.Context, r *pb.CreatePaymentRequ
 }
 
 func (sr *grpcServer) GetPaymentStatus(ctx context.Context, r *pb.GetPaymentStatusRequest) (*pb.GetPaymentStatusResponse, error) {
-	resp, err := sr.service.GetTransection(ctx, r.PaymentId)
+	resp, err := sr.service.GetTransaction(ctx, r.PaymentId)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (sr *grpcServer) GetPaymentStatus(ctx context.Context, r *pb.GetPaymentStat
 }
 
 func (sr *grpcServer) GetTransectionHistory(ctx context.Context, r *pb.GetTransectionHistoryRequest) (*pb.GetTransectionHistoryResponse, error) {
-	resp, err := sr.service.GetTransectionHistory(ctx, r.UserId, r.Limit, r.Offset)
+	resp, err := sr.service.GetTransactionHistory(ctx, r.UserId, r.Limit, r.Offset)
 	if err != nil {
 		return nil, err
 	}

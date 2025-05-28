@@ -12,7 +12,7 @@ type TransactionModel struct {
 	ReceiverId     string    `json:"receiver_id"`
 	Amount         int64     `json:"amount"`
 	Note           string    `json:"note"`
-	IdempotencyKey string    `json:"imenpotency_key"`
+	IdempotencyKey string    `json:"idempotency_key"`
 	CreatedAt      time.Time `json:"created_at"`
 }
 
