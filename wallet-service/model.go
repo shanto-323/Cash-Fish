@@ -21,3 +21,9 @@ type TransactionHistoryModel struct {
 	TotalTransection int64               `json:"total"`
 	TotalPage        int64               `json:"pages"`
 }
+
+type TransactionResponseModel struct {
+	PaymentId     string    `json:"payment_id"`
+	PaymentStatus string    `json:"status"`
+	CreatedAt     time.Time `json:"created_at"`
+}
