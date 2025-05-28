@@ -6,5 +6,5 @@
 - Go > 1.2 
 - gRPC ***(API Layer)***
 - PostgreSQL ***(Primary Database)*** 
-- Redis ***(Cache For Idempotecy)***
+- Redis ***(Cache For Idempotency)***
 - RabbitMQ  ***(Event Broker)***

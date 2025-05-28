@@ -16,15 +16,15 @@ import (
 )
 
 type Config struct {
-	DatabaseUrl string `envcinfig:"DATABASE_URL"`
+	DatabaseUrl string `envconfig:"DATABASE_DSN"`
 	RedisUrl    string `envconfig:"REDIS_URL"`
-	RabbitmqUrl string `envconfig:"RABBIRMQ_URL"`
+	RabbitmqUrl string `envconfig:"RABBITMQ_URL"`
 }
 
 func main() {
-	config := Config{}
-	err := envconfig.Process("", &config)
-	if err != nil {
+	var cfg Config
+	err := envconfig.Process("", &cfg)
+	if err != nil || cfg.DatabaseUrl == "" || cfg.RabbitmqUrl == "" || cfg.RedisUrl == "" {
 		log.Fatal("could not get env variabls", err)
 	}
 
@@ -34,34 +34,32 @@ func main() {
 	retry.ForeverSleep(
 		2*time.Second,
 		func(_ int) error {
-			repository, err = setUpRepository(config.DatabaseUrl)
+			log.Println(cfg)
+			repository, err = walletservice.NewTransactionRepository(cfg.DatabaseUrl)
+			if err != nil {
+				log.Print("main", err)
+				return err
+			}
+
+			redisClient, err = setUpRedis(cfg.RedisUrl)
 			if err != nil {
 				log.Print(err)
 				return err
 			}
 
-			redisClient, err = setUpRedis(config.RedisUrl)
+			publisher, err = setUpRabbitmq(cfg.RabbitmqUrl)
 			if err != nil {
 				log.Print(err)
 				return err
 			}
 
-			publisher, err = setUpRabbitmq(config.RabbitmqUrl)
-			if err != nil {
-				log.Print(err)
-				return err
-			}
-
+			log.Print("everything working")
 			return nil
 		},
 	)
 
 	s := walletservice.NewService(repository, redisClient, publisher)
 	log.Fatal(walletservice.ListenGRPC(s, 8080))
-}
-
-func setUpRepository(url string) (walletservice.Repository, error) {
-	return walletservice.NewTransactionRepository(url)
 }
 
 func setUpRedis(redisUrl string) (*redis.Client, error) {
@@ -76,8 +74,8 @@ func setUpRedis(redisUrl string) (*redis.Client, error) {
 		DB:       0,
 	}
 	redisClient := redis.NewClient(config)
-	if err := redisClient.Ping(context.Background()); err != nil {
-		return nil, fmt.Errorf("cant connect database")
+	if err := redisClient.Ping(context.Background()).Err(); err != nil {
+		return nil, fmt.Errorf("cant connect redis database: %s", err)
 	}
 
 	return redisClient, nil
