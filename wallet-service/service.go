@@ -51,7 +51,7 @@ func (s *Service) CreateNewTransection(ctx context.Context, senderId, receiverId
 		return nil, err
 	}
 
-	if err := s.redisClient.Set(ctx, catchKey, "true", 10*time.Minute).Err(); err != nil {
+	if err := s.redisClient.Set(ctx, catchKey, "true", 30*time.Minute).Err(); err != nil {
 		return nil, fmt.Errorf("failed to set-up idempotency key: %s", err)
 	}
 
@@ -66,7 +66,7 @@ func (s *Service) GetTransection(ctx context.Context, payment_id string) (*Trans
 	return s.repo.TransactionsStatus(ctx, payment_id)
 }
 
-func (s *Service) GetTransectionHistory(ctx context.Context, id string, limit, offset int64) ([]*TransactionModel, error) {
+func (s *Service) GetTransectionHistory(ctx context.Context, id string, limit, offset int64) (*TransactionHistoryModel, error) {
 	if limit < 10 || limit > 100 {
 		limit = 10
 	}
@@ -74,7 +74,55 @@ func (s *Service) GetTransectionHistory(ctx context.Context, id string, limit, o
 		offset = 0
 	}
 
-	return s.repo.TransactionsHistory(ctx, id, limit, offset)
+	type result struct {
+		transactions []*TransactionModel
+		total        int64
+		err          error
+	}
+
+	ch := make(chan result, 2)
+	go func() {
+		t, err := s.repo.TransactionsHistory(ctx, id, limit, offset)
+		select {
+		case ch <- result{transactions: t, err: err}:
+		case <-ctx.Done():
+			return
+		}
+	}()
+
+	go func() {
+		t, err := s.repo.TotalTransaction(ctx, id)
+		select {
+		case ch <- result{total: *t, err: err}:
+		case <-ctx.Done():
+			return
+		}
+	}()
+
+	var transections []*TransactionModel
+	var total int64
+	var err error
+
+	for i := 0; i < 2; i++ {
+		res := <-ch
+		if res.err != nil {
+			err = res.err
+		} else if res.transactions != nil {
+			transections = res.transactions
+		} else {
+			total = res.total
+		}
+	}
+	if err != nil {
+		return nil, err
+	}
+	total_page := (total - offset) / limit
+
+	return &TransactionHistoryModel{
+		Transactions:     transections,
+		TotalTransection: total,
+		TotalPage:        total_page,
+	}, nil
 }
 
 func (s *Service) publishPaymentEvent(ctx context.Context, tx TransactionModel) error {

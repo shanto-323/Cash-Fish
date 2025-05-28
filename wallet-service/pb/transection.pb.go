@@ -80,7 +80,7 @@ type Transection struct {
 	Status        PaymentStatus          `protobuf:"varint,2,opt,name=status,proto3,enum=pb.PaymentStatus" json:"status,omitempty"`
 	SenderId      string                 `protobuf:"bytes,3,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
 	ReceiverId    string                 `protobuf:"bytes,4,opt,name=receiver_id,json=receiverId,proto3" json:"receiver_id,omitempty"`
-	Amount        int64                  `protobuf:"varint,5,opt,name=amount,proto3" json:"amount,omitempty"`
+	Amount        float64                `protobuf:"fixed64,5,opt,name=amount,proto3" json:"amount,omitempty"`
 	Note          string                 `protobuf:"bytes,6,opt,name=note,proto3" json:"note,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -145,7 +145,7 @@ func (x *Transection) GetReceiverId() string {
 	return ""
 }
 
-func (x *Transection) GetAmount() int64 {
+func (x *Transection) GetAmount() float64 {
 	if x != nil {
 		return x.Amount
 	}
@@ -167,13 +167,14 @@ func (x *Transection) GetCreatedAt() *timestamppb.Timestamp {
 }
 
 type CreatePaymentRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	SenderId      string                 `protobuf:"bytes,1,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
-	ReceiverId    string                 `protobuf:"bytes,2,opt,name=receiver_id,json=receiverId,proto3" json:"receiver_id,omitempty"`
-	Amount        int64                  `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
-	Note          string                 `protobuf:"bytes,4,opt,name=note,proto3" json:"note,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	SenderId       string                 `protobuf:"bytes,1,opt,name=sender_id,json=senderId,proto3" json:"sender_id,omitempty"`
+	ReceiverId     string                 `protobuf:"bytes,2,opt,name=receiver_id,json=receiverId,proto3" json:"receiver_id,omitempty"`
+	Amount         float64                `protobuf:"fixed64,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	Note           string                 `protobuf:"bytes,4,opt,name=note,proto3" json:"note,omitempty"`
+	IdempotencyKey string                 `protobuf:"bytes,5,opt,name=idempotency_key,json=idempotencyKey,proto3" json:"idempotency_key,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *CreatePaymentRequest) Reset() {
@@ -220,7 +221,7 @@ func (x *CreatePaymentRequest) GetReceiverId() string {
 	return ""
 }
 
-func (x *CreatePaymentRequest) GetAmount() int64 {
+func (x *CreatePaymentRequest) GetAmount() float64 {
 	if x != nil {
 		return x.Amount
 	}
@@ -230,6 +231,13 @@ func (x *CreatePaymentRequest) GetAmount() int64 {
 func (x *CreatePaymentRequest) GetNote() string {
 	if x != nil {
 		return x.Note
+	}
+	return ""
+}
+
+func (x *CreatePaymentRequest) GetIdempotencyKey() string {
+	if x != nil {
+		return x.IdempotencyKey
 	}
 	return ""
 }
@@ -514,16 +522,17 @@ const file_transection_proto_rawDesc = "" +
 	"\tsender_id\x18\x03 \x01(\tR\bsenderId\x12\x1f\n" +
 	"\vreceiver_id\x18\x04 \x01(\tR\n" +
 	"receiverId\x12\x16\n" +
-	"\x06amount\x18\x05 \x01(\x03R\x06amount\x12\x12\n" +
+	"\x06amount\x18\x05 \x01(\x01R\x06amount\x12\x12\n" +
 	"\x04note\x18\x06 \x01(\tR\x04note\x129\n" +
 	"\n" +
-	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\x80\x01\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\xa9\x01\n" +
 	"\x14CreatePaymentRequest\x12\x1b\n" +
 	"\tsender_id\x18\x01 \x01(\tR\bsenderId\x12\x1f\n" +
 	"\vreceiver_id\x18\x02 \x01(\tR\n" +
 	"receiverId\x12\x16\n" +
-	"\x06amount\x18\x03 \x01(\x03R\x06amount\x12\x12\n" +
-	"\x04note\x18\x04 \x01(\tR\x04note\"\x9c\x01\n" +
+	"\x06amount\x18\x03 \x01(\x01R\x06amount\x12\x12\n" +
+	"\x04note\x18\x04 \x01(\tR\x04note\x12'\n" +
+	"\x0fidempotency_key\x18\x05 \x01(\tR\x0eidempotencyKey\"\x9c\x01\n" +
 	"\x15CreatePaymentResponse\x12\x1d\n" +
 	"\n" +
 	"payment_id\x18\x01 \x01(\tR\tpaymentId\x12)\n" +

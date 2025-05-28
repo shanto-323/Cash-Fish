@@ -11,6 +11,7 @@ type Repository interface {
 	MakeTransaction(ctx context.Context, wallet TransactionModel) error
 	TransactionsStatus(ctx context.Context, payment_id string) (*TransactionModel, error)
 	TransactionsHistory(ctx context.Context, id string, limit int64, offset int64) ([]*TransactionModel, error)
+	TotalTransaction(ctx context.Context, id string) (*int64, error)
 }
 
 type TransactionRepository struct {
@@ -123,4 +124,20 @@ func (w *TransactionRepository) TransactionsHistory(ctx context.Context, id stri
 	}
 
 	return transactions, nil
+}
+
+func (w *TransactionRepository) TotalTransaction(ctx context.Context, id string) (*int64, error) {
+	var count int64
+	err := w.db.QueryRowContext(
+		ctx,
+		`SELECT COUNT(*)
+		FROM payments 
+		WHERE sender_id = $1 OR receiver_id = $1`,
+	).Scan(
+		&count,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &count, nil
 }

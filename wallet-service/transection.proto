@@ -8,7 +8,7 @@ message Transection {
   PaymentStatus status = 2;
   string sender_id = 3;
   string receiver_id = 4;
-  int64 amount = 5;
+  double amount = 5;
   string note = 6;
   google.protobuf.Timestamp created_at = 7;
 }
@@ -16,8 +16,9 @@ message Transection {
 message CreatePaymentRequest {
   string sender_id = 1;
   string receiver_id = 2;
-  int64 amount = 3;
+  double amount = 3;
   string note = 4;
+  string idempotency_key = 5;
 }
 
 message CreatePaymentResponse {

@@ -15,3 +15,9 @@ type TransactionModel struct {
 	IdempotencyKey string    `json:"imenpotency_key"`
 	CreatedAt      time.Time `json:"created_at"`
 }
+
+type TransactionHistoryModel struct {
+	Transactions     []*TransactionModel `json:"result"`
+	TotalTransection int64               `json:"total"`
+	TotalPage        int64               `json:"pages"`
+}
