@@ -24,7 +24,7 @@ type Config struct {
 func main() {
 	var cfg Config
 	err := envconfig.Process("", &cfg)
-	if err != nil || cfg.DatabaseUrl == "" || cfg.RabbitmqUrl == "" || cfg.RedisUrl == "" {
+	if err != nil {
 		log.Fatal("could not get env variabls", err)
 	}
 
@@ -34,7 +34,6 @@ func main() {
 	retry.ForeverSleep(
 		2*time.Second,
 		func(_ int) error {
-			log.Println(cfg)
 			repository, err = walletservice.NewTransactionRepository(cfg.DatabaseUrl)
 			if err != nil {
 				log.Print("main", err)

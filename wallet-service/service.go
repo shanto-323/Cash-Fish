@@ -2,7 +2,6 @@ package walletservice
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"time"
 
@@ -26,6 +25,7 @@ func NewService(repo Repository, redisClient *redis.Client, publisher *amqp.Chan
 }
 
 func (s *Service) CreateNewTransaction(ctx context.Context, senderId, receiverId, note, idempotencyKey string, amount float64) (*TransactionModel, error) {
+	var err error
 	catchKey := fmt.Sprintf("IdempotencyKey:%s", idempotencyKey)
 	exits, err := s.redisClient.Get(ctx, catchKey).Result()
 	if err != nil && err != redis.Nil {
@@ -44,6 +44,13 @@ func (s *Service) CreateNewTransaction(ctx context.Context, senderId, receiverId
 		Amount:         int64(amount * 100),
 		CreatedAt:      time.Now(),
 	}
+	defer func() {
+		if err != nil {
+			if err := s.publishPaymentEvent(ctx, transactionModel, PAYMENT_STATUS_ERROR); err != nil {
+				fmt.Printf("failed to publish payment event: %s", err)
+			}
+		}
+	}()
 
 	err = s.repo.MakeTransaction(ctx, transactionModel)
 	if err != nil {
@@ -54,7 +61,7 @@ func (s *Service) CreateNewTransaction(ctx context.Context, senderId, receiverId
 		return nil, fmt.Errorf("failed to set-up idempotency key: %s", err)
 	}
 
-	if err := s.publishPaymentEvent(ctx, transactionModel); err != nil {
+	if err := s.publishPaymentEvent(ctx, transactionModel, PAYMENT_STATUS_COMPLETE); err != nil {
 		return nil, fmt.Errorf("failed to publish payment event: %s", err)
 	}
 
@@ -124,21 +131,13 @@ func (s *Service) GetTransactionHistory(ctx context.Context, id string, limit, o
 	}, nil
 }
 
-func (s *Service) publishPaymentEvent(ctx context.Context, tx TransactionModel) error {
-	payload, err := json.Marshal(tx)
-	if err != nil {
-		return nil
+func (s *Service) publishPaymentEvent(ctx context.Context, tx TransactionModel, status string) error {
+	producer := NewProducer(s.publisher)
+	payload := &ProducerModel{
+		PaymentId:  tx.ID.String(),
+		SenderId:   tx.SenderId,
+		ReceiverId: tx.ReceiverId,
+		Status:     status,
 	}
-
-	return s.publisher.PublishWithContext(
-		ctx,
-		"transaction_done",
-		"payment.created",
-		false,
-		false,
-		amqp.Publishing{
-			ContentType: "application/json",
-			Body:        payload,
-		},
-	)
+	return producer.Produce(ctx, *payload)
 }

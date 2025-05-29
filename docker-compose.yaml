@@ -58,6 +58,18 @@ services:
     networks:
       - my_network
 
+  notification-service:
+    build:
+      context: .
+      dockerfile: ./notification-service/app.dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://shanto:123456@rabbitmq:5672/
+    restart: on-failure
+    networks:
+      - my_network
+
 networks:
   # Define custom network
   my_network:
