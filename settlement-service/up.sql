@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS balances(
+    uid UUID PRIMARY KEY,
+    balance BIGINT NOT NULL DEFAULT 0,
+    active BOOLEAN DEFAULT TRUE
+);
