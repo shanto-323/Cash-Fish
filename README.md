@@ -7,3 +7,5 @@
 - ***PostgreSQL*** (Primary Database)
 - ***Redis*** (Idempotency & Caching)
 - ***RabbitMQ*** (Event Broker)
+
+![overview](asset/diagram.png)
