@@ -1,2 +1,82 @@
 syntax = "proto3";
 package pb;
+option go_package = "./pb";
+
+message User {
+  string username = 1;
+  string password = 2;
+  string email = 3;
+}
+
+message Card {
+  string number = 1;
+  string brand = 2;
+  int64 exp_month = 3;
+  int64 exp_year = 4;
+}
+
+message SignUpRequest { User user = 1; }
+message SignUpResponse {
+  string id = 1;
+  User user = 2;
+  string token = 3;
+  string refresh_token = 4;
+}
+
+message SignInRequest {
+  string email = 1;
+  string password = 2;
+}
+message SignInResponse {
+  string id = 1;
+  User user = 2;
+  string token = 3;
+  string refresh_token = 4;
+}
+
+message SignOutRequest { string id = 1; }
+message SignOutResponse { string msg = 1; }
+
+message NewTokenRequest {
+  string id = 1;
+  string token = 2;
+}
+message NewTokenResponse { string token = 1; }
+
+message UpdateUserRequest { User user = 1; }
+message UpdateUserResponse { string msg = 1; }
+
+message DeleteUserRequest { string id = 1; }
+message DeleteUserResponse { string msg = 1; }
+
+service AuthService {
+  rpc SignUp(SignUpRequest) returns (SignUpResponse);
+  rpc SignIn(SignInRequest) returns (SignInResponse);
+  rpc SignOut(SignOutRequest) returns (SignOutResponse);
+  rpc NewToken(NewTokenRequest) returns (NewTokenResponse);
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+}
+
+// CARD SECTION
+message AddCardRequest { Card card = 1; }
+message AddCardResponse { repeated Card card = 1; }
+
+message GetCardsRequest { string uid = 1; }
+message GetCardsResponse { repeated Card card = 1; }
+
+message RemoveCardRequest {
+  string id = 1;
+  string uid = 2;
+}
+message RemoveCardResponse { string msg = 1; }
+
+message DeleteCardsRequest { string uid = 1; }
+message DeleteCardsResponse { string msg = 1; }
+
+service CardService {
+  rpc AddCards(AddCardRequest) returns (AddCardResponse);
+  rpc GetCards(GetCardsRequest) returns (GetCardsResponse);
+  rpc RemoveCard(RemoveCardRequest) returns (RemoveCardResponse);
+  rpc DeleteCards(DeleteCardsRequest) returns (DeleteCardsResponse);
+}

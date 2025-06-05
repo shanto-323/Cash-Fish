@@ -14,7 +14,8 @@ type Repository interface {
 	UpdateUser(ctx context.Context, user UserModel) error
 	UpdateToken(ctx context.Context, id string, token string) error
 	DeleteUser(ctx context.Context, id string) error
-	DeleteCard(ctx context.Context, uid string) error
+	DeleteAllCard(ctx context.Context, uid string) error
+	DeleteCard(ctx context.Context, uid string, id string) error
 }
 
 type userDatabase struct {
@@ -45,23 +46,6 @@ func (r *userDatabase) NewUser(ctx context.Context, user UserModel) error {
 	`
 	_, err := r.db.ExecContext(ctx, q, user.ID, user.Username, user.Password, user.Email, user.RefreshToken)
 	return err
-}
-
-func (r *userDatabase) NewCard(ctx context.Context, card CardMetadata) (*[]CardsResponseMetadata, error) {
-	q := `
-		INSERT INTO cards(
-			user_id,
-			card_number,
-			brand,
-			expiry_month,
-			expiry_year,
-		) VALUES ($1,$2,$3,$4,$5)
-	`
-	if _, err := r.db.ExecContext(ctx, q, card.UID, card.Number, card.Brand, card.ExpiryMonth, card.ExpiryYear); err != nil {
-		return nil, err
-	}
-
-	return r.GetCardsById(ctx, card.UID)
 }
 
 func (r *userDatabase) GetUser(ctx context.Context, id string) (*UserResponseModel, error) {
@@ -97,36 +81,6 @@ func (r *userDatabase) GetUser(ctx context.Context, id string) (*UserResponseMod
 		},
 		Cards: *cards,
 	}, nil
-}
-
-func (r *userDatabase) GetCardsById(ctx context.Context, id string) (*[]CardsResponseMetadata, error) {
-	cards := new([]CardsResponseMetadata) // CARD FIELD
-	q := `
-		SELECT card_number, brand, expiry_month, expiry_year
-		FROM cards 
-		WHERE user_id = $1 
-	`
-	cardRows, txErr := r.db.QueryContext(ctx, q, id)
-	if txErr != nil {
-		return nil, txErr
-	}
-	defer cardRows.Close()
-	for cardRows.Next() {
-		c := CardsResponseMetadata{}
-		txErr = cardRows.Scan(
-			&c.Number,
-			&c.Brand,
-			&c.ExpiryMonth,
-			&c.ExpiryYear,
-		)
-		if txErr != nil {
-			return nil, txErr
-		}
-		c.Number = hideNumber(c.Number)
-		*cards = append(*cards, c)
-	}
-
-	return cards, nil
 }
 
 func (r *userDatabase) GetUserByEmail(ctx context.Context, email string) (*UserResponseModel, error) {
@@ -181,12 +135,70 @@ func (r *userDatabase) DeleteUser(ctx context.Context, id string) error {
 	return err
 }
 
-func (r *userDatabase) DeleteCard(ctx context.Context, uid string) error {
+// CARD SECTION
+func (r *userDatabase) NewCard(ctx context.Context, card CardMetadata) (*[]CardsResponseMetadata, error) {
+	q := `
+		INSERT INTO cards(
+			user_id,
+			card_number,
+			brand,
+			expiry_month,
+			expiry_year,
+		) VALUES ($1,$2,$3,$4,$5)
+	`
+	if _, err := r.db.ExecContext(ctx, q, card.UID, card.Number, card.Brand, card.ExpiryMonth, card.ExpiryYear); err != nil {
+		return nil, err
+	}
+
+	return r.GetCardsById(ctx, card.UID)
+}
+
+func (r *userDatabase) GetCardsById(ctx context.Context, id string) (*[]CardsResponseMetadata, error) {
+	cards := new([]CardsResponseMetadata) // CARD FIELD
+	q := `
+		SELECT id, card_number, brand, expiry_month, expiry_year
+		FROM cards 
+		WHERE user_id = $1 
+	`
+	cardRows, txErr := r.db.QueryContext(ctx, q, id)
+	if txErr != nil {
+		return nil, txErr
+	}
+	defer cardRows.Close()
+	for cardRows.Next() {
+		c := CardsResponseMetadata{}
+		txErr = cardRows.Scan(
+			&c.ID,
+			&c.Number,
+			&c.Brand,
+			&c.ExpiryMonth,
+			&c.ExpiryYear,
+		)
+		if txErr != nil {
+			return nil, txErr
+		}
+		c.Number = hideNumber(c.Number)
+		*cards = append(*cards, c)
+	}
+
+	return cards, nil
+}
+
+func (r *userDatabase) DeleteAllCard(ctx context.Context, uid string) error {
 	q := `
 		DELETE FROM cards
 		WHERE user_id = $1
 	`
 	_, err := r.db.ExecContext(ctx, q, uid)
+	return err
+}
+
+func (r *userDatabase) DeleteCard(ctx context.Context, uid string, id string) error { // ID -> CARD_ID .. UID -> USER_ID
+	q := `
+		DELETE FROM cards
+		WHERE user_id = $1 AND id = $2
+	`
+	_, err := r.db.ExecContext(ctx, q, uid, id)
 	return err
 }
 

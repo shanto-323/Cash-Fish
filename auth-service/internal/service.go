@@ -14,10 +14,12 @@ type Service interface {
 	SignUp(ctx context.Context, username, password, email string) (*UserResponseModel, error)
 	SignIn(ctx context.Context, email, password string) (*UserResponseModel, error)
 	SignOut(ctx context.Context, id string) error
+	NewToken(ctx context.Context, id string, refreshToken string) (string, error)
 	UpdateUser(ctx context.Context, user UserModel) error
 	AddCard(ctx context.Context, uid, number, brand string, exp_m, exp_y int) (*[]CardsResponseMetadata, error)
 	DeleteUser(ctx context.Context, id string) error
-	DeleteCard(ctx context.Context, uid string) error
+	DeleteAllCard(ctx context.Context, uid string) error
+	RemoveCard(ctx context.Context, uid string, number string) error
 }
 
 type authService struct {
@@ -102,6 +104,22 @@ func (s *authService) SignOut(ctx context.Context, id string) error {
 	return s.repo.UpdateToken(ctx, id, "")
 }
 
+func (s *authService) NewToken(ctx context.Context, id string, refreshTtoken string) (string, error) {
+	user, err := s.repo.GetUser(ctx, id)
+	if err != nil || user == nil {
+		return "", fmt.Errorf("user not found")
+	}
+	if user.Token.RefreshToken == "" || user.Token.RefreshToken != refreshTtoken {
+		return "", fmt.Errorf("token nil %s or token not matched", refreshTtoken)
+	}
+
+	token, _, err := pkg.NewToken(user.ID)
+	if err != nil {
+		return "", err
+	}
+	return token, err
+}
+
 func (s *authService) UpdateUser(ctx context.Context, user UserModel) error {
 	resp, err := s.repo.GetUser(ctx, user.ID)
 	if err != nil {
@@ -146,13 +164,14 @@ func (s *authService) DeleteUser(ctx context.Context, id string) error {
 	return s.repo.DeleteUser(ctx, id)
 }
 
-func (s *authService) DeleteCard(ctx context.Context, uid string) error {
-	return s.repo.DeleteCard(ctx, uid)
+func (s *authService) DeleteAllCard(ctx context.Context, uid string) error {
+	return s.repo.DeleteAllCard(ctx, uid)
+}
+
+func (s *authService) RemoveCard(ctx context.Context, uid string, number string) error {
+	return s.repo.DeleteCard(ctx, uid, number)
 }
 
 func mutationHelper(value string) bool {
-	if value != "" {
-		return true
-	}
-	return false
+	return value != ""
 }
