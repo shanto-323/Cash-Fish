@@ -1,6 +1,6 @@
 package authservice
 
-type UserModel struct {
+type UserModel struct { // DATABASE MODEL
 	ID           string `json:"id"`
 	Username     string `json:"username"`
 	Password     string `json:"password"`
@@ -8,7 +8,7 @@ type UserModel struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
-type CardMetadata struct {
+type CardMetadata struct { // DATABASE MODEL
 	UID         string `json:"uid"`
 	Number      string `json:"number"`
 	Brand       string `json:"brand"`

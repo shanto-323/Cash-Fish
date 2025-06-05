@@ -7,6 +7,11 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
+const (
+	TRANSECTION_QUEUE        = "tr.status"
+	SETTLEMENT_SERVICE_QUEUE = "se.status"
+)
+
 type Publisher struct {
 	conn *amqp.Connection
 	ch   *amqp.Channel
@@ -66,16 +71,16 @@ func (p *Publisher) Consumer(ctx context.Context, sourceQueue string, targetQueu
 		for msg := range msgs {
 			if err := p.Produce(ctx, targetQueue, msg); err != nil {
 				log.Print(err)
-				return
+				continue // keep listening event
 			}
 		}
 	}()
 	return nil
 }
 
-func (p *Publisher) Produce(ctx context.Context, targetQueue string, msg amqp.Delivery) error {
+func (p *Publisher) Produce(ctx context.Context, queueName string, msg amqp.Delivery) error {
 	_, err := p.ch.QueueDeclare(
-		targetQueue,
+		queueName,
 		true,
 		false,
 		false,
@@ -89,7 +94,7 @@ func (p *Publisher) Produce(ctx context.Context, targetQueue string, msg amqp.De
 	return p.ch.PublishWithContext(
 		ctx,
 		"",
-		targetQueue,
+		queueName,
 		false,
 		false,
 		amqp.Publishing{
