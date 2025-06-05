@@ -28,7 +28,7 @@ func NewGrpcServer(s authservice.Service, p int) error {
 	return serv.Serve(ls)
 }
 
-func (g *grpcAuthServer) UserSignUp(ctx context.Context, r *pb.SignUpRequest) (*pb.SignUpResponse, error) {
+func (g *grpcAuthServer) SignUp(ctx context.Context, r *pb.SignUpRequest) (*pb.SignUpResponse, error) {
 	resp, err := g.service.SignUp(ctx, r.User.Username, r.User.Password, r.User.Email)
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (g *grpcAuthServer) UserSignUp(ctx context.Context, r *pb.SignUpRequest) (*
 	}, nil
 }
 
-func (g *grpcAuthServer) UserSignIn(ctx context.Context, r *pb.SignInRequest) (*pb.SignInResponse, error) {
+func (g *grpcAuthServer) SignIn(ctx context.Context, r *pb.SignInRequest) (*pb.SignInResponse, error) {
 	resp, err := g.service.SignIn(ctx, r.Email, r.Password)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func (g *grpcAuthServer) UserSignIn(ctx context.Context, r *pb.SignInRequest) (*
 	}, nil
 }
 
-func (g *grpcAuthServer) UserSignOut(ctx context.Context, r *pb.SignOutRequest) (*pb.SignOutResponse, error) {
+func (g *grpcAuthServer) SignOut(ctx context.Context, r *pb.SignOutRequest) (*pb.SignOutResponse, error) {
 	err := g.service.SignOut(ctx, r.Id)
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func (g *grpcAuthServer) UserSignOut(ctx context.Context, r *pb.SignOutRequest) 
 	}, nil
 }
 
-func (g *grpcAuthServer) UserUpdate(ctx context.Context, r *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
+func (g *grpcAuthServer) UpdateUser(ctx context.Context, r *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
 	if err := g.service.UpdateUser(ctx, authservice.UserModel{
 		ID:       r.Id,
 		Username: r.User.Username,
@@ -88,7 +88,7 @@ func (g *grpcAuthServer) UserUpdate(ctx context.Context, r *pb.UpdateUserRequest
 	}, nil
 }
 
-func (g *grpcAuthServer) UserDelete(ctx context.Context, r *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
+func (g *grpcAuthServer) DeleteUser(ctx context.Context, r *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
 	if err := g.service.DeleteUser(ctx, r.Id); err != nil {
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func (g *grpcAuthServer) UserDelete(ctx context.Context, r *pb.DeleteUserRequest
 	}, nil
 }
 
-func (g *grpcAuthServer) UserNewToken(ctx context.Context, r *pb.NewTokenRequest) (*pb.NewTokenResponse, error) {
+func (g *grpcAuthServer) NewToken(ctx context.Context, r *pb.NewTokenRequest) (*pb.NewTokenResponse, error) {
 	resp, err := g.service.NewToken(ctx, r.Id, r.Token)
 	if err != nil {
 		return nil, err
