@@ -3,8 +3,7 @@ package auth
 import (
 	"context"
 
-	authservice "auth-service/internal"
-	"auth-service/pb"
+	"gateway/internal/service/auth/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -28,7 +27,7 @@ func NewAuthClient(url string) (*AuthClient, error) {
 	}, nil
 }
 
-func (a *AuthClient) AuthClientSignUP(ctx context.Context, username, email, password string) (*authservice.UserResponseModel, error) {
+func (a *AuthClient) AuthClientSignUP(ctx context.Context, username, email, password string) (*UserResponseModel, error) {
 	resp, err := a.service.SignUp(ctx, &pb.SignUpRequest{
 		User: &pb.User{
 			Username: username,
@@ -40,20 +39,20 @@ func (a *AuthClient) AuthClientSignUP(ctx context.Context, username, email, pass
 		return nil, err
 	}
 
-	return &authservice.UserResponseModel{
+	return &UserResponseModel{
 		ID:       resp.Id,
 		Username: resp.User.Username,
 		Password: resp.User.Password,
 		Email:    resp.User.Email,
-		Cards:    []authservice.CardsResponseMetadata{},
-		Token: authservice.TokenMetadata{
+		Cards:    []CardsResponseMetadata{},
+		Token: TokenMetadata{
 			Token:        resp.Token,
 			RefreshToken: resp.RefreshToken,
 		},
 	}, nil
 }
 
-func (a *AuthClient) AuthClientSignIN(ctx context.Context, email, password string) (*authservice.UserResponseModel, error) {
+func (a *AuthClient) AuthClientSignIN(ctx context.Context, email, password string) (*UserResponseModel, error) {
 	resp, err := a.service.SignIn(ctx, &pb.SignInRequest{
 		Password: password,
 		Email:    email,
@@ -62,13 +61,13 @@ func (a *AuthClient) AuthClientSignIN(ctx context.Context, email, password strin
 		return nil, err
 	}
 
-	return &authservice.UserResponseModel{
+	return &UserResponseModel{
 		ID:       resp.Id,
 		Username: resp.User.Username,
 		Password: resp.User.Password,
 		Email:    resp.User.Email,
-		Cards:    []authservice.CardsResponseMetadata{}, // TOO MUCH PAYLOAD SOLUTION -> []SLICE{EMPTY}
-		Token: authservice.TokenMetadata{
+		Cards:    []CardsResponseMetadata{}, // TOO MUCH PAYLOAD SOLUTION -> []SLICE{EMPTY}
+		Token: TokenMetadata{
 			Token:        resp.Token,
 			RefreshToken: resp.RefreshToken,
 		},

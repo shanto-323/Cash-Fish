@@ -1,0 +1,4 @@
+.env
+/notification-service/
+/wallet-service/
+/settlement-service/

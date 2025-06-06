@@ -3,8 +3,7 @@ package card
 import (
 	"context"
 
-	authservice "auth-service/internal"
-	"auth-service/pb"
+	"gateway/internal/service/card/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -28,7 +27,7 @@ func NewCardhClient(url string) (*CardClient, error) {
 	}, nil
 }
 
-func (c *CardClient) CardClientAddCard(ctx context.Context, uid, number, brand string, exp_m, exp_y int32) ([]*authservice.CardsResponseMetadata, error) {
+func (c *CardClient) CardClientAddCard(ctx context.Context, uid, number, brand string, exp_m, exp_y int32) ([]*CardsResponseMetadata, error) {
 	resp, err := c.service.AddCard(ctx, &pb.AddCardRequest{
 		Uid: uid,
 		Card: &pb.Card{
@@ -42,9 +41,9 @@ func (c *CardClient) CardClientAddCard(ctx context.Context, uid, number, brand s
 		return nil, err
 	}
 
-	cards := []*authservice.CardsResponseMetadata{}
+	cards := []*CardsResponseMetadata{}
 	for _, c := range resp.Card {
-		card := &authservice.CardsResponseMetadata{
+		card := &CardsResponseMetadata{
 			ID:          c.Id,
 			Number:      c.Number,
 			Brand:       c.Brand,
@@ -57,15 +56,15 @@ func (c *CardClient) CardClientAddCard(ctx context.Context, uid, number, brand s
 	return cards, nil
 }
 
-func (c *CardClient) CardClientGetALlCards(ctx context.Context, uid string) ([]*authservice.CardsResponseMetadata, error) {
+func (c *CardClient) CardClientGetALlCards(ctx context.Context, uid string) ([]*CardsResponseMetadata, error) {
 	resp, err := c.service.GetCards(ctx, &pb.GetCardsRequest{Uid: uid})
 	if err != nil {
 		return nil, err
 	}
 
-	cards := []*authservice.CardsResponseMetadata{}
+	cards := []*CardsResponseMetadata{}
 	for _, c := range resp.Card {
-		card := &authservice.CardsResponseMetadata{
+		card := &CardsResponseMetadata{
 			ID:          c.Id,
 			Number:      c.Number,
 			Brand:       c.Brand,
