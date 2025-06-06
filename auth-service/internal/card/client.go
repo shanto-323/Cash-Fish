@@ -1,0 +1,97 @@
+package card
+
+import (
+	"context"
+
+	authservice "auth-service/internal"
+	"auth-service/pb"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+)
+
+type CardClient struct {
+	conn    *grpc.ClientConn
+	service pb.CardServiceClient
+}
+
+func NewCardhClient(url string) (*CardClient, error) {
+	conn, err := grpc.NewClient(url, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		return nil, err
+	}
+
+	service := pb.NewCardServiceClient(conn)
+	return &CardClient{
+		conn:    conn,
+		service: service,
+	}, nil
+}
+
+func (c *CardClient) CardClientAddCard(ctx context.Context, uid, number, brand string, exp_m, exp_y int32) ([]*authservice.CardsResponseMetadata, error) {
+	resp, err := c.service.AddCard(ctx, &pb.AddCardRequest{
+		Uid: uid,
+		Card: &pb.Card{
+			Number:   number,
+			Brand:    brand,
+			ExpMonth: exp_m,
+			ExpYear:  exp_y,
+		},
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	cards := []*authservice.CardsResponseMetadata{}
+	for _, c := range resp.Card {
+		card := &authservice.CardsResponseMetadata{
+			ID:          c.Id,
+			Number:      c.Number,
+			Brand:       c.Brand,
+			ExpiryMonth: int(c.ExpMonth),
+			ExpiryYear:  int(c.ExpYear),
+		}
+		cards = append(cards, card)
+	}
+
+	return cards, nil
+}
+
+func (c *CardClient) CardClientGetALlCards(ctx context.Context, uid string) ([]*authservice.CardsResponseMetadata, error) {
+	resp, err := c.service.GetCards(ctx, &pb.GetCardsRequest{Uid: uid})
+	if err != nil {
+		return nil, err
+	}
+
+	cards := []*authservice.CardsResponseMetadata{}
+	for _, c := range resp.Card {
+		card := &authservice.CardsResponseMetadata{
+			ID:          c.Id,
+			Number:      c.Number,
+			Brand:       c.Brand,
+			ExpiryMonth: int(c.ExpMonth),
+			ExpiryYear:  int(c.ExpYear),
+		}
+		cards = append(cards, card)
+	}
+
+	return cards, nil
+}
+
+func (c *CardClient) CardClientRemoveCard(ctx context.Context, uid, id string) (*string, error) {
+	resp, err := c.service.RemoveCard(ctx, &pb.RemoveCardRequest{Uid: uid, Id: id}) // ID -> CARD_ID
+	if err != nil {
+		return nil, err
+	}
+
+	return &resp.Msg, nil
+}
+
+func (c *CardClient) CardClientDeleteCards(ctx context.Context, uid string) (*string, error) {
+	resp, err := c.service.DeleteCards(ctx, &pb.DeleteCardsRequest{Uid: uid})
+	if err != nil {
+		return nil, err
+	}
+
+	return &resp.Msg, nil
+}

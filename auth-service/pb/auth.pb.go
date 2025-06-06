@@ -83,10 +83,11 @@ func (x *User) GetEmail() string {
 
 type Card struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Number        string                 `protobuf:"bytes,1,opt,name=number,proto3" json:"number,omitempty"`
-	Brand         string                 `protobuf:"bytes,2,opt,name=brand,proto3" json:"brand,omitempty"`
-	ExpMonth      int64                  `protobuf:"varint,3,opt,name=exp_month,json=expMonth,proto3" json:"exp_month,omitempty"`
-	ExpYear       int64                  `protobuf:"varint,4,opt,name=exp_year,json=expYear,proto3" json:"exp_year,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Number        string                 `protobuf:"bytes,2,opt,name=number,proto3" json:"number,omitempty"`
+	Brand         string                 `protobuf:"bytes,3,opt,name=brand,proto3" json:"brand,omitempty"`
+	ExpMonth      int32                  `protobuf:"varint,4,opt,name=exp_month,json=expMonth,proto3" json:"exp_month,omitempty"`
+	ExpYear       int32                  `protobuf:"varint,5,opt,name=exp_year,json=expYear,proto3" json:"exp_year,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -121,6 +122,13 @@ func (*Card) Descriptor() ([]byte, []int) {
 	return file_auth_proto_rawDescGZIP(), []int{1}
 }
 
+func (x *Card) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
 func (x *Card) GetNumber() string {
 	if x != nil {
 		return x.Number
@@ -135,14 +143,14 @@ func (x *Card) GetBrand() string {
 	return ""
 }
 
-func (x *Card) GetExpMonth() int64 {
+func (x *Card) GetExpMonth() int32 {
 	if x != nil {
 		return x.ExpMonth
 	}
 	return 0
 }
 
-func (x *Card) GetExpYear() int64 {
+func (x *Card) GetExpYear() int32 {
 	if x != nil {
 		return x.ExpYear
 	}
@@ -567,7 +575,8 @@ func (x *NewTokenResponse) GetToken() string {
 
 type UpdateUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	User          *User                  `protobuf:"bytes,2,opt,name=user,proto3" json:"user,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -600,6 +609,13 @@ func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
 func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
 	return file_auth_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *UpdateUserRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
 }
 
 func (x *UpdateUserRequest) GetUser() *User {
@@ -744,7 +760,8 @@ func (x *DeleteUserResponse) GetMsg() string {
 // CARD SECTION
 type AddCardRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Card          *Card                  `protobuf:"bytes,1,opt,name=card,proto3" json:"card,omitempty"`
+	Uid           string                 `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	Card          *Card                  `protobuf:"bytes,2,opt,name=card,proto3" json:"card,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -777,6 +794,13 @@ func (x *AddCardRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AddCardRequest.ProtoReflect.Descriptor instead.
 func (*AddCardRequest) Descriptor() ([]byte, []int) {
 	return file_auth_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *AddCardRequest) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
 }
 
 func (x *AddCardRequest) GetCard() *Card {
@@ -1111,12 +1135,13 @@ const file_auth_proto_rawDesc = "" +
 	"\x04User\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x14\n" +
-	"\x05email\x18\x03 \x01(\tR\x05email\"l\n" +
-	"\x04Card\x12\x16\n" +
-	"\x06number\x18\x01 \x01(\tR\x06number\x12\x14\n" +
-	"\x05brand\x18\x02 \x01(\tR\x05brand\x12\x1b\n" +
-	"\texp_month\x18\x03 \x01(\x03R\bexpMonth\x12\x19\n" +
-	"\bexp_year\x18\x04 \x01(\x03R\aexpYear\"-\n" +
+	"\x05email\x18\x03 \x01(\tR\x05email\"|\n" +
+	"\x04Card\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
+	"\x06number\x18\x02 \x01(\tR\x06number\x12\x14\n" +
+	"\x05brand\x18\x03 \x01(\tR\x05brand\x12\x1b\n" +
+	"\texp_month\x18\x04 \x01(\x05R\bexpMonth\x12\x19\n" +
+	"\bexp_year\x18\x05 \x01(\x05R\aexpYear\"-\n" +
 	"\rSignUpRequest\x12\x1c\n" +
 	"\x04user\x18\x01 \x01(\v2\b.pb.UserR\x04user\"y\n" +
 	"\x0eSignUpResponse\x12\x0e\n" +
@@ -1140,17 +1165,19 @@ const file_auth_proto_rawDesc = "" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05token\x18\x02 \x01(\tR\x05token\"(\n" +
 	"\x10NewTokenResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\"1\n" +
-	"\x11UpdateUserRequest\x12\x1c\n" +
-	"\x04user\x18\x01 \x01(\v2\b.pb.UserR\x04user\"&\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\"A\n" +
+	"\x11UpdateUserRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1c\n" +
+	"\x04user\x18\x02 \x01(\v2\b.pb.UserR\x04user\"&\n" +
 	"\x12UpdateUserResponse\x12\x10\n" +
 	"\x03msg\x18\x01 \x01(\tR\x03msg\"#\n" +
 	"\x11DeleteUserRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"&\n" +
 	"\x12DeleteUserResponse\x12\x10\n" +
-	"\x03msg\x18\x01 \x01(\tR\x03msg\".\n" +
-	"\x0eAddCardRequest\x12\x1c\n" +
-	"\x04card\x18\x01 \x01(\v2\b.pb.CardR\x04card\"/\n" +
+	"\x03msg\x18\x01 \x01(\tR\x03msg\"@\n" +
+	"\x0eAddCardRequest\x12\x10\n" +
+	"\x03uid\x18\x01 \x01(\tR\x03uid\x12\x1c\n" +
+	"\x04card\x18\x02 \x01(\v2\b.pb.CardR\x04card\"/\n" +
 	"\x0fAddCardResponse\x12\x1c\n" +
 	"\x04card\x18\x01 \x03(\v2\b.pb.CardR\x04card\"#\n" +
 	"\x0fGetCardsRequest\x12\x10\n" +
@@ -1174,9 +1201,9 @@ const file_auth_proto_rawDesc = "" +
 	"\n" +
 	"UpdateUser\x12\x15.pb.UpdateUserRequest\x1a\x16.pb.UpdateUserResponse\x12;\n" +
 	"\n" +
-	"DeleteUser\x12\x15.pb.DeleteUserRequest\x1a\x16.pb.DeleteUserResponse2\xf6\x01\n" +
-	"\vCardService\x123\n" +
-	"\bAddCards\x12\x12.pb.AddCardRequest\x1a\x13.pb.AddCardResponse\x125\n" +
+	"DeleteUser\x12\x15.pb.DeleteUserRequest\x1a\x16.pb.DeleteUserResponse2\xf5\x01\n" +
+	"\vCardService\x122\n" +
+	"\aAddCard\x12\x12.pb.AddCardRequest\x1a\x13.pb.AddCardResponse\x125\n" +
 	"\bGetCards\x12\x13.pb.GetCardsRequest\x1a\x14.pb.GetCardsResponse\x12;\n" +
 	"\n" +
 	"RemoveCard\x12\x15.pb.RemoveCardRequest\x1a\x16.pb.RemoveCardResponse\x12>\n" +
@@ -1233,7 +1260,7 @@ var file_auth_proto_depIdxs = []int32{
 	8,  // 10: pb.AuthService.NewToken:input_type -> pb.NewTokenRequest
 	10, // 11: pb.AuthService.UpdateUser:input_type -> pb.UpdateUserRequest
 	12, // 12: pb.AuthService.DeleteUser:input_type -> pb.DeleteUserRequest
-	14, // 13: pb.CardService.AddCards:input_type -> pb.AddCardRequest
+	14, // 13: pb.CardService.AddCard:input_type -> pb.AddCardRequest
 	16, // 14: pb.CardService.GetCards:input_type -> pb.GetCardsRequest
 	18, // 15: pb.CardService.RemoveCard:input_type -> pb.RemoveCardRequest
 	20, // 16: pb.CardService.DeleteCards:input_type -> pb.DeleteCardsRequest
@@ -1243,7 +1270,7 @@ var file_auth_proto_depIdxs = []int32{
 	9,  // 20: pb.AuthService.NewToken:output_type -> pb.NewTokenResponse
 	11, // 21: pb.AuthService.UpdateUser:output_type -> pb.UpdateUserResponse
 	13, // 22: pb.AuthService.DeleteUser:output_type -> pb.DeleteUserResponse
-	15, // 23: pb.CardService.AddCards:output_type -> pb.AddCardResponse
+	15, // 23: pb.CardService.AddCard:output_type -> pb.AddCardResponse
 	17, // 24: pb.CardService.GetCards:output_type -> pb.GetCardsResponse
 	19, // 25: pb.CardService.RemoveCard:output_type -> pb.RemoveCardResponse
 	21, // 26: pb.CardService.DeleteCards:output_type -> pb.DeleteCardsResponse

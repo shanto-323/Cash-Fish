@@ -17,6 +17,7 @@ type Service interface {
 	NewToken(ctx context.Context, id string, refreshToken string) (string, error)
 	UpdateUser(ctx context.Context, user UserModel) error
 	AddCard(ctx context.Context, uid, number, brand string, exp_m, exp_y int) (*[]CardsResponseMetadata, error)
+	GetAllCard(ctx context.Context, uid string) (*[]CardsResponseMetadata, error)
 	DeleteUser(ctx context.Context, id string) error
 	DeleteAllCard(ctx context.Context, uid string) error
 	RemoveCard(ctx context.Context, uid string, number string) error
@@ -150,6 +151,10 @@ func (s *authService) UpdateUser(ctx context.Context, user UserModel) error {
 	})
 }
 
+func (s *authService) DeleteUser(ctx context.Context, id string) error {
+	return s.repo.DeleteUser(ctx, id)
+}
+
 func (s *authService) AddCard(ctx context.Context, uid, number, brand string, exp_m, exp_y int) (*[]CardsResponseMetadata, error) {
 	return s.repo.NewCard(ctx, CardMetadata{
 		UID:         uid,
@@ -160,8 +165,8 @@ func (s *authService) AddCard(ctx context.Context, uid, number, brand string, ex
 	})
 }
 
-func (s *authService) DeleteUser(ctx context.Context, id string) error {
-	return s.repo.DeleteUser(ctx, id)
+func (s *authService) GetAllCard(ctx context.Context, uid string) (*[]CardsResponseMetadata, error) {
+	return s.repo.GetCardsById(ctx, uid)
 }
 
 func (s *authService) DeleteAllCard(ctx context.Context, uid string) error {

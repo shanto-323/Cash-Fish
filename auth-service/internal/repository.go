@@ -22,7 +22,7 @@ type userDatabase struct {
 	db *sql.DB
 }
 
-func NewUserDatabase(dsn string) (Repository, error) {
+func NewRepository(dsn string) (Repository, error) {
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
@@ -153,14 +153,14 @@ func (r *userDatabase) NewCard(ctx context.Context, card CardMetadata) (*[]Cards
 	return r.GetCardsById(ctx, card.UID)
 }
 
-func (r *userDatabase) GetCardsById(ctx context.Context, id string) (*[]CardsResponseMetadata, error) {
+func (r *userDatabase) GetCardsById(ctx context.Context, uid string) (*[]CardsResponseMetadata, error) {
 	cards := new([]CardsResponseMetadata) // CARD FIELD
 	q := `
 		SELECT id, card_number, brand, expiry_month, expiry_year
 		FROM cards 
 		WHERE user_id = $1 
 	`
-	cardRows, txErr := r.db.QueryContext(ctx, q, id)
+	cardRows, txErr := r.db.QueryContext(ctx, q, uid)
 	if txErr != nil {
 		return nil, txErr
 	}

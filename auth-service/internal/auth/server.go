@@ -16,8 +16,8 @@ type grpcAuthServer struct {
 	pb.UnimplementedAuthServiceServer
 }
 
-func NewGrpcServer(s authservice.Service, p int) error {
-	port := fmt.Sprintf(":%d", p)
+func NewGrpcServer(s authservice.Service, p string) error {
+	port := fmt.Sprintf(":%s", p)
 	ls, err := net.Listen("tcp", port)
 	if err != nil {
 		return err

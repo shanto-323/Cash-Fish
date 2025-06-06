@@ -9,10 +9,11 @@ message User {
 }
 
 message Card {
-  string number = 1;
-  string brand = 2;
-  int64 exp_month = 3;
-  int64 exp_year = 4;
+  string id = 1;
+  string number = 2;
+  string brand = 3;
+  int32 exp_month = 4;
+  int32 exp_year = 5;
 }
 
 message SignUpRequest { User user = 1; }
@@ -43,7 +44,10 @@ message NewTokenRequest {
 }
 message NewTokenResponse { string token = 1; }
 
-message UpdateUserRequest { User user = 1; }
+message UpdateUserRequest {
+  string id = 1;
+  User user = 2;
+}
 message UpdateUserResponse { string msg = 1; }
 
 message DeleteUserRequest { string id = 1; }
@@ -59,7 +63,10 @@ service AuthService {
 }
 
 // CARD SECTION
-message AddCardRequest { Card card = 1; }
+message AddCardRequest {
+  string uid = 1;
+  Card card = 2;
+}
 message AddCardResponse { repeated Card card = 1; }
 
 message GetCardsRequest { string uid = 1; }
@@ -75,7 +82,7 @@ message DeleteCardsRequest { string uid = 1; }
 message DeleteCardsResponse { string msg = 1; }
 
 service CardService {
-  rpc AddCards(AddCardRequest) returns (AddCardResponse);
+  rpc AddCard(AddCardRequest) returns (AddCardResponse);
   rpc GetCards(GetCardsRequest) returns (GetCardsResponse);
   rpc RemoveCard(RemoveCardRequest) returns (RemoveCardResponse);
   rpc DeleteCards(DeleteCardsRequest) returns (DeleteCardsResponse);
