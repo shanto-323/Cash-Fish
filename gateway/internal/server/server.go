@@ -17,8 +17,12 @@ type Server struct {
 	cardClient *card.CardClient
 }
 
-func NewServer(authUrl, cardUrl string) (*Server, error) {
-	return &Server{}, nil
+func NewServer(ip string, authClient *auth.AuthClient, cardClient *card.CardClient) (*Server, error) {
+	return &Server{
+		ipAddr:     ip,
+		authClient: authClient,
+		cardClient: cardClient,
+	}, nil
 }
 
 func (s *Server) StartServer() error {

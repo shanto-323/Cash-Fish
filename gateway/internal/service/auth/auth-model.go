@@ -1,5 +1,15 @@
 package auth
 
+type UserModel struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+}
+
+type Token struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
 type UserResponseModel struct {
 	ID       string                  `json:"id"`
 	Username string                  `json:"username"`

@@ -44,7 +44,7 @@ func (c *CardClient) CardClientAddCard(ctx context.Context, uid, number, brand s
 	cards := []*CardsResponseMetadata{}
 	for _, c := range resp.Card {
 		card := &CardsResponseMetadata{
-			ID:          c.Id,
+			UID:         c.Id, // THATS CARD_ID
 			Number:      c.Number,
 			Brand:       c.Brand,
 			ExpiryMonth: int(c.ExpMonth),
@@ -65,7 +65,7 @@ func (c *CardClient) CardClientGetALlCards(ctx context.Context, uid string) ([]*
 	cards := []*CardsResponseMetadata{}
 	for _, c := range resp.Card {
 		card := &CardsResponseMetadata{
-			ID:          c.Id,
+			UID:         c.Id, // THATS CARD_ID
 			Number:      c.Number,
 			Brand:       c.Brand,
 			ExpiryMonth: int(c.ExpMonth),

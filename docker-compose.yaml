@@ -9,8 +9,27 @@ services:
     volumes:
       - ./wallet-service/up.sql:/docker-entrypoint-initdb.d/up.sql
     ports:
-      - 5432:5432
+      - "5432:5432"
+    restart: unless-stopped
+
+  auth:
+    build:
+      context: .
+      dockerfile: auth-service/app.dockerfile
+    env_file:
+      - .env
+    depends_on: 
+      - postgres
     restart: on-failure
-  
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/app.dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    restart: on-failure
 
   

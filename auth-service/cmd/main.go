@@ -15,7 +15,7 @@ import (
 type Config struct {
 	DatabaseDsn       string `envconfig:"DATABASE_DSN"`
 	AuthServiceIpAddr string `envconfig:"AUTH_SERVICE_IP_ADDR"`
-	CardServiceIpAddr string `envconfig:"AUTH_SERVICE_IP_ADDR"`
+	CardServiceIpAddr string `envconfig:"CARD_SERVICE_IP_ADDR"`
 }
 
 func main() {
