@@ -1,11 +1,12 @@
 package main
 
 import (
+	"log"
+	"time"
+
 	"gateway/internal/server"
 	"gateway/internal/service/auth"
 	"gateway/internal/service/card"
-	"log"
-	"time"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/tinrab/retry"

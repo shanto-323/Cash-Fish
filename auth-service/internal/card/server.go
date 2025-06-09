@@ -3,6 +3,7 @@ package card
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 
 	authservice "auth-service/internal"
@@ -27,6 +28,10 @@ func NewGrpcServer(s authservice.Service, p string) error {
 	pb.RegisterCardServiceServer(serv, &grpCardServer{service: s})
 	return serv.Serve(ls)
 }
+
+const (
+	LOC_SERVICE = "CARD_SERVICE"
+)
 
 func (g *grpCardServer) AddCard(ctx context.Context, r *pb.AddCardRequest) (*pb.AddCardResponse, error) {
 	resp, err := g.service.AddCard(ctx, r.Uid, r.Card.Number, r.Card.Brand, int(r.Card.ExpMonth), int(r.Card.ExpYear))
@@ -56,15 +61,22 @@ func (g *grpCardServer) DeleteCards(ctx context.Context, r *pb.DeleteCardsReques
 	}
 
 	return &pb.DeleteCardsResponse{
-		Msg: fmt.Sprintln("deleted all card"),
+		Msg: "deleted all card",
 	}, nil
 }
 
 func (g *grpCardServer) GetCards(ctx context.Context, r *pb.GetCardsRequest) (*pb.GetCardsResponse, error) {
+	var err error
 	resp, err := g.service.GetAllCard(ctx, r.Uid)
 	if err != nil {
 		return nil, err
 	}
+
+	defer func() {
+		if err != nil {
+			log.Println(LOC_SERVICE, err)
+		}
+	}()
 
 	cards := []*pb.Card{}
 	for _, c := range *resp {

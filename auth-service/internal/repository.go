@@ -3,7 +3,9 @@ package authservice
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
+	"strings"
 
 	_ "github.com/lib/pq"
 )
@@ -93,10 +95,10 @@ func (r *userDatabase) GetUser(ctx context.Context, id string) (*UserResponseMod
 		return nil, err
 	}
 
-	// cards, err := r.GetCardsById(ctx, id)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	cards, err := r.GetCardsById(ctx, id)
+	if err != nil {
+		return nil, err
+	}
 	return &UserResponseModel{
 		ID:       user.ID,
 		Username: user.Username,
@@ -105,7 +107,7 @@ func (r *userDatabase) GetUser(ctx context.Context, id string) (*UserResponseMod
 		Token: TokenMetadata{
 			RefreshToken: user.RefreshToken,
 		},
-		Cards: nil,
+		Cards: *cards,
 	}, nil
 }
 
@@ -190,6 +192,15 @@ func (r *userDatabase) NewCard(ctx context.Context, card CardMetadata) (*[]Cards
 			log.Println(LOCATION, err)
 		}
 	}()
+	// CHECK IF USER CARDS COUNT <= 1
+	resp, err := r.GetCardsById(ctx, card.UID)
+	if err != nil {
+		return nil, fmt.Errorf("card counting error")
+	}
+	if len(*resp) > 10 {
+		return nil, fmt.Errorf("maximum card limit reached%d", len(*resp))
+	}
+
 	q := `
 		INSERT INTO cards(
 			user_id,
@@ -251,6 +262,15 @@ func (r *userDatabase) DeleteAllCard(ctx context.Context, uid string) error {
 			log.Println(LOCATION, err)
 		}
 	}()
+	// CHECK IF USER CARDS COUNT <= 1
+	resp, err := r.GetCardsById(ctx, uid)
+	if err != nil {
+		return fmt.Errorf("card counting error")
+	}
+	if len(*resp) > 10 {
+		return fmt.Errorf("maximum card limit reached%d", len(*resp))
+	}
+
 	q := `
 		DELETE FROM cards
 		WHERE user_id = $1
@@ -259,7 +279,8 @@ func (r *userDatabase) DeleteAllCard(ctx context.Context, uid string) error {
 	return err
 }
 
-func (r *userDatabase) DeleteCard(ctx context.Context, uid string, id string) error { // ID -> CARD_ID .. UID -> USER_ID
+func (r *userDatabase) DeleteCard(ctx context.Context, uid string, id string) error {
+	// ID -> CARD_ID .. UID -> USER_ID
 	var err error
 	defer func() {
 		if err != nil {
@@ -275,11 +296,5 @@ func (r *userDatabase) DeleteCard(ctx context.Context, uid string, id string) er
 }
 
 func hideNumber(number string) string {
-	size := len(number) - 4
-	pref := number[:4]
-	suf := ""
-	for i := 0; i < size; i++ {
-		suf += " *"
-	}
-	return pref + suf
+	return number[:4] + strings.Repeat("*", len(number)-4)
 }

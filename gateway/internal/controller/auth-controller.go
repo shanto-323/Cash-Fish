@@ -56,7 +56,7 @@ func (c *AuthController) SignUp(w http.ResponseWriter, r *http.Request) error {
 		&http.Cookie{
 			Name:  "access_token",
 			Value: resp.Token.Token,
-			Path:  "./",
+			Path:  "/api/v1/",
 		},
 	)
 
@@ -82,7 +82,7 @@ func (c *AuthController) SignIn(w http.ResponseWriter, r *http.Request) error {
 		&http.Cookie{
 			Name:  "access_token",
 			Value: resp.Token.Token,
-			Path:  "./",
+			Path:  "/api/v1/",
 		},
 	)
 	return pkg.WriteJson(w, http.StatusOK, resp)

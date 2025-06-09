@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users(
 
 CREATE TABLE IF NOT EXISTS cards(
     id  SERIAL PRIMARY KEY, 
-    user_id UUID NOT NULL,
+    user_id VARCHAR(50) NOT NULL,
     card_number VARCHAR(20) NOT NULL,
     brand VARCHAR(20) NOT NULL, 
     expiry_month INT NOT NULL, 

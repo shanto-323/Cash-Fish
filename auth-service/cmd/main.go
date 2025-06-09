@@ -6,6 +6,7 @@ import (
 
 	authservice "auth-service/internal"
 	auth "auth-service/internal/auth"
+	"auth-service/internal/card"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/tinrab/retry"
@@ -37,6 +38,13 @@ func main() {
 		},
 	)
 	service := authservice.NewService(repository)
-	log.Println("auth server running on port", cfg.AuthServiceIpAddr)
-	log.Fatal(auth.NewGrpcServer(service, cfg.AuthServiceIpAddr))
+	go func() {
+		log.Println("auth server running on port", cfg.AuthServiceIpAddr)
+		log.Fatal(auth.NewGrpcServer(service, cfg.AuthServiceIpAddr))
+	}()
+	go func() {
+		log.Println("card server running on port", cfg.CardServiceIpAddr)
+		log.Fatal(card.NewGrpcServer(service, cfg.CardServiceIpAddr))
+	}()
+	select {}
 }

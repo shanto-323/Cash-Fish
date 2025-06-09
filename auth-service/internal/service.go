@@ -45,6 +45,12 @@ func (s *authService) SignUp(ctx context.Context, username, password, email stri
 			log.Println(LOC_SERVICE, err)
 		}
 	}()
+
+	_, err = s.repo.GetUserByEmail(ctx, email)
+	if err == nil {
+		return nil, fmt.Errorf("user already exists")
+	}
+
 	user := UserModel{
 		Username: username,
 		Email:    email,
@@ -185,6 +191,7 @@ func (s *authService) DeleteUser(ctx context.Context, id string) error {
 	return s.repo.DeleteUser(ctx, id)
 }
 
+// CARD SECTION
 func (s *authService) AddCard(ctx context.Context, uid, number, brand string, exp_m, exp_y int) (*[]CardsResponseMetadata, error) {
 	return s.repo.NewCard(ctx, CardMetadata{
 		UID:         uid,
@@ -196,10 +203,21 @@ func (s *authService) AddCard(ctx context.Context, uid, number, brand string, ex
 }
 
 func (s *authService) GetAllCard(ctx context.Context, uid string) (*[]CardsResponseMetadata, error) {
-	return s.repo.GetCardsById(ctx, uid)
+	var err error
+	resp, err := s.repo.GetCardsById(ctx, uid)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err != nil {
+			log.Println(LOC_SERVICE, err)
+		}
+	}()
+
+	return resp, nil
 }
 
-func (s *authService) DeleteAllCard(ctx context.Context, uid string) error {
+func (s *authService) DeleteAllCard(ctx context.Context, uid string) error { ///////
 	return s.repo.DeleteAllCard(ctx, uid)
 }
 
