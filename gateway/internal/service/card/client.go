@@ -3,7 +3,7 @@ package card
 import (
 	"context"
 
-	"gateway/internal/service/card/pb"
+	pb "gateway/internal/service/pb"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"

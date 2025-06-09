@@ -8,3 +8,4 @@ FROM alpine:3.20
 WORKDIR /usr/bin
 COPY --from=build /auth/app .
 CMD [ "app" ]
+

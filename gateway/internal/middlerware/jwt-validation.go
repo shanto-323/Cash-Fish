@@ -2,12 +2,12 @@ package middlerware
 
 import (
 	"fmt"
-	"gateway/pkg"
 	"net/http"
 	"time"
 
+	"gateway/pkg"
+
 	"github.com/golang-jwt/jwt"
-	"github.com/gorilla/mux"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -19,13 +19,13 @@ type JwtClaims struct {
 func JwtMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			accessToken, err := r.Cookie("token")
+			accessToken, err := r.Cookie("access_token")
 			if err != nil {
-				pkg.WriteJson(w, http.StatusBadGateway, err)
+				pkg.WriteJson(w, http.StatusBadGateway, fmt.Errorf("token err%s", err))
 				return
 			}
 			if accessToken.Value == "" {
-				pkg.WriteJson(w, http.StatusBadRequest, err)
+				pkg.WriteJson(w, http.StatusBadRequest, fmt.Errorf("access token is nil%s", err))
 				return
 			}
 
@@ -33,16 +33,16 @@ func JwtMiddleware(next http.Handler) http.Handler {
 			if err != nil {
 				if ve, ok := err.(*jwt.ValidationError); ok {
 					if ve.Errors&jwt.ValidationErrorExpired != 0 {
-						pkg.WriteJson(w, http.StatusBadGateway, err)
+						pkg.WriteJson(w, http.StatusBadGateway, fmt.Errorf("validation error%s", err))
 						return
 					}
 				}
+				pkg.WriteJson(w, http.StatusUnauthorized, fmt.Errorf("invalid token"))
 				return
 			}
 
-			vars := mux.Vars(r)
-			uid := vars["uid"]
-			if uid != claims.ID {
+			id := r.URL.Query().Get("id")
+			if id != claims.ID {
 				pkg.WriteJson(w, http.StatusBadGateway, fmt.Errorf("id not matching"))
 				return
 			}
@@ -64,7 +64,7 @@ func validateJwt(token string) (*JwtClaims, error) {
 
 	signedToken, err := jwt.ParseWithClaims(
 		token,
-		*&JwtClaims{},
+		&JwtClaims{},
 		func(t *jwt.Token) (any, error) {
 			if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("token encryption method not matching")

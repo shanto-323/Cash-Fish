@@ -81,6 +81,82 @@ func (x *User) GetEmail() string {
 	return ""
 }
 
+type Card struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Number        string                 `protobuf:"bytes,2,opt,name=number,proto3" json:"number,omitempty"`
+	Brand         string                 `protobuf:"bytes,3,opt,name=brand,proto3" json:"brand,omitempty"`
+	ExpMonth      int32                  `protobuf:"varint,4,opt,name=exp_month,json=expMonth,proto3" json:"exp_month,omitempty"`
+	ExpYear       int32                  `protobuf:"varint,5,opt,name=exp_year,json=expYear,proto3" json:"exp_year,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Card) Reset() {
+	*x = Card{}
+	mi := &file_auth_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Card) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Card) ProtoMessage() {}
+
+func (x *Card) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Card.ProtoReflect.Descriptor instead.
+func (*Card) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Card) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Card) GetNumber() string {
+	if x != nil {
+		return x.Number
+	}
+	return ""
+}
+
+func (x *Card) GetBrand() string {
+	if x != nil {
+		return x.Brand
+	}
+	return ""
+}
+
+func (x *Card) GetExpMonth() int32 {
+	if x != nil {
+		return x.ExpMonth
+	}
+	return 0
+}
+
+func (x *Card) GetExpYear() int32 {
+	if x != nil {
+		return x.ExpYear
+	}
+	return 0
+}
+
 type SignUpRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
@@ -90,7 +166,7 @@ type SignUpRequest struct {
 
 func (x *SignUpRequest) Reset() {
 	*x = SignUpRequest{}
-	mi := &file_auth_proto_msgTypes[1]
+	mi := &file_auth_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -102,7 +178,7 @@ func (x *SignUpRequest) String() string {
 func (*SignUpRequest) ProtoMessage() {}
 
 func (x *SignUpRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[1]
+	mi := &file_auth_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -115,7 +191,7 @@ func (x *SignUpRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignUpRequest.ProtoReflect.Descriptor instead.
 func (*SignUpRequest) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{1}
+	return file_auth_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *SignUpRequest) GetUser() *User {
@@ -137,7 +213,7 @@ type SignUpResponse struct {
 
 func (x *SignUpResponse) Reset() {
 	*x = SignUpResponse{}
-	mi := &file_auth_proto_msgTypes[2]
+	mi := &file_auth_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -149,7 +225,7 @@ func (x *SignUpResponse) String() string {
 func (*SignUpResponse) ProtoMessage() {}
 
 func (x *SignUpResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[2]
+	mi := &file_auth_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -162,7 +238,7 @@ func (x *SignUpResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignUpResponse.ProtoReflect.Descriptor instead.
 func (*SignUpResponse) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{2}
+	return file_auth_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *SignUpResponse) GetId() string {
@@ -203,7 +279,7 @@ type SignInRequest struct {
 
 func (x *SignInRequest) Reset() {
 	*x = SignInRequest{}
-	mi := &file_auth_proto_msgTypes[3]
+	mi := &file_auth_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -215,7 +291,7 @@ func (x *SignInRequest) String() string {
 func (*SignInRequest) ProtoMessage() {}
 
 func (x *SignInRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[3]
+	mi := &file_auth_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -228,7 +304,7 @@ func (x *SignInRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignInRequest.ProtoReflect.Descriptor instead.
 func (*SignInRequest) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{3}
+	return file_auth_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *SignInRequest) GetEmail() string {
@@ -257,7 +333,7 @@ type SignInResponse struct {
 
 func (x *SignInResponse) Reset() {
 	*x = SignInResponse{}
-	mi := &file_auth_proto_msgTypes[4]
+	mi := &file_auth_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -269,7 +345,7 @@ func (x *SignInResponse) String() string {
 func (*SignInResponse) ProtoMessage() {}
 
 func (x *SignInResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[4]
+	mi := &file_auth_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -282,7 +358,7 @@ func (x *SignInResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignInResponse.ProtoReflect.Descriptor instead.
 func (*SignInResponse) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{4}
+	return file_auth_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *SignInResponse) GetId() string {
@@ -322,7 +398,7 @@ type SignOutRequest struct {
 
 func (x *SignOutRequest) Reset() {
 	*x = SignOutRequest{}
-	mi := &file_auth_proto_msgTypes[5]
+	mi := &file_auth_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -334,7 +410,7 @@ func (x *SignOutRequest) String() string {
 func (*SignOutRequest) ProtoMessage() {}
 
 func (x *SignOutRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[5]
+	mi := &file_auth_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -347,7 +423,7 @@ func (x *SignOutRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignOutRequest.ProtoReflect.Descriptor instead.
 func (*SignOutRequest) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{5}
+	return file_auth_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SignOutRequest) GetId() string {
@@ -366,7 +442,7 @@ type SignOutResponse struct {
 
 func (x *SignOutResponse) Reset() {
 	*x = SignOutResponse{}
-	mi := &file_auth_proto_msgTypes[6]
+	mi := &file_auth_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -378,7 +454,7 @@ func (x *SignOutResponse) String() string {
 func (*SignOutResponse) ProtoMessage() {}
 
 func (x *SignOutResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[6]
+	mi := &file_auth_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -391,7 +467,7 @@ func (x *SignOutResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SignOutResponse.ProtoReflect.Descriptor instead.
 func (*SignOutResponse) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{6}
+	return file_auth_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *SignOutResponse) GetMsg() string {
@@ -411,7 +487,7 @@ type NewTokenRequest struct {
 
 func (x *NewTokenRequest) Reset() {
 	*x = NewTokenRequest{}
-	mi := &file_auth_proto_msgTypes[7]
+	mi := &file_auth_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -423,7 +499,7 @@ func (x *NewTokenRequest) String() string {
 func (*NewTokenRequest) ProtoMessage() {}
 
 func (x *NewTokenRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[7]
+	mi := &file_auth_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -436,7 +512,7 @@ func (x *NewTokenRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NewTokenRequest.ProtoReflect.Descriptor instead.
 func (*NewTokenRequest) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{7}
+	return file_auth_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *NewTokenRequest) GetId() string {
@@ -462,7 +538,7 @@ type NewTokenResponse struct {
 
 func (x *NewTokenResponse) Reset() {
 	*x = NewTokenResponse{}
-	mi := &file_auth_proto_msgTypes[8]
+	mi := &file_auth_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -474,7 +550,7 @@ func (x *NewTokenResponse) String() string {
 func (*NewTokenResponse) ProtoMessage() {}
 
 func (x *NewTokenResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[8]
+	mi := &file_auth_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -487,7 +563,7 @@ func (x *NewTokenResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NewTokenResponse.ProtoReflect.Descriptor instead.
 func (*NewTokenResponse) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{8}
+	return file_auth_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *NewTokenResponse) GetToken() string {
@@ -507,7 +583,7 @@ type UpdateUserRequest struct {
 
 func (x *UpdateUserRequest) Reset() {
 	*x = UpdateUserRequest{}
-	mi := &file_auth_proto_msgTypes[9]
+	mi := &file_auth_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -519,7 +595,7 @@ func (x *UpdateUserRequest) String() string {
 func (*UpdateUserRequest) ProtoMessage() {}
 
 func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[9]
+	mi := &file_auth_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -532,7 +608,7 @@ func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
 func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{9}
+	return file_auth_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *UpdateUserRequest) GetId() string {
@@ -558,7 +634,7 @@ type UpdateUserResponse struct {
 
 func (x *UpdateUserResponse) Reset() {
 	*x = UpdateUserResponse{}
-	mi := &file_auth_proto_msgTypes[10]
+	mi := &file_auth_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -570,7 +646,7 @@ func (x *UpdateUserResponse) String() string {
 func (*UpdateUserResponse) ProtoMessage() {}
 
 func (x *UpdateUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[10]
+	mi := &file_auth_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -583,7 +659,7 @@ func (x *UpdateUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateUserResponse.ProtoReflect.Descriptor instead.
 func (*UpdateUserResponse) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{10}
+	return file_auth_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *UpdateUserResponse) GetMsg() string {
@@ -602,7 +678,7 @@ type DeleteUserRequest struct {
 
 func (x *DeleteUserRequest) Reset() {
 	*x = DeleteUserRequest{}
-	mi := &file_auth_proto_msgTypes[11]
+	mi := &file_auth_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -614,7 +690,7 @@ func (x *DeleteUserRequest) String() string {
 func (*DeleteUserRequest) ProtoMessage() {}
 
 func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[11]
+	mi := &file_auth_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -627,7 +703,7 @@ func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
 func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{11}
+	return file_auth_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *DeleteUserRequest) GetId() string {
@@ -646,7 +722,7 @@ type DeleteUserResponse struct {
 
 func (x *DeleteUserResponse) Reset() {
 	*x = DeleteUserResponse{}
-	mi := &file_auth_proto_msgTypes[12]
+	mi := &file_auth_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -658,7 +734,7 @@ func (x *DeleteUserResponse) String() string {
 func (*DeleteUserResponse) ProtoMessage() {}
 
 func (x *DeleteUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_proto_msgTypes[12]
+	mi := &file_auth_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -671,10 +747,379 @@ func (x *DeleteUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserResponse.ProtoReflect.Descriptor instead.
 func (*DeleteUserResponse) Descriptor() ([]byte, []int) {
-	return file_auth_proto_rawDescGZIP(), []int{12}
+	return file_auth_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *DeleteUserResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+// CARD SECTION
+type AddCardRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           string                 `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	Card          *Card                  `protobuf:"bytes,2,opt,name=card,proto3" json:"card,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddCardRequest) Reset() {
+	*x = AddCardRequest{}
+	mi := &file_auth_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddCardRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddCardRequest) ProtoMessage() {}
+
+func (x *AddCardRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddCardRequest.ProtoReflect.Descriptor instead.
+func (*AddCardRequest) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *AddCardRequest) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
+}
+
+func (x *AddCardRequest) GetCard() *Card {
+	if x != nil {
+		return x.Card
+	}
+	return nil
+}
+
+type AddCardResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Card          []*Card                `protobuf:"bytes,1,rep,name=card,proto3" json:"card,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddCardResponse) Reset() {
+	*x = AddCardResponse{}
+	mi := &file_auth_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddCardResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddCardResponse) ProtoMessage() {}
+
+func (x *AddCardResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddCardResponse.ProtoReflect.Descriptor instead.
+func (*AddCardResponse) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *AddCardResponse) GetCard() []*Card {
+	if x != nil {
+		return x.Card
+	}
+	return nil
+}
+
+type GetCardsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           string                 `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCardsRequest) Reset() {
+	*x = GetCardsRequest{}
+	mi := &file_auth_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCardsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCardsRequest) ProtoMessage() {}
+
+func (x *GetCardsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCardsRequest.ProtoReflect.Descriptor instead.
+func (*GetCardsRequest) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GetCardsRequest) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
+}
+
+type GetCardsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Card          []*Card                `protobuf:"bytes,1,rep,name=card,proto3" json:"card,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCardsResponse) Reset() {
+	*x = GetCardsResponse{}
+	mi := &file_auth_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCardsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCardsResponse) ProtoMessage() {}
+
+func (x *GetCardsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCardsResponse.ProtoReflect.Descriptor instead.
+func (*GetCardsResponse) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetCardsResponse) GetCard() []*Card {
+	if x != nil {
+		return x.Card
+	}
+	return nil
+}
+
+type RemoveCardRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Uid           string                 `protobuf:"bytes,2,opt,name=uid,proto3" json:"uid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveCardRequest) Reset() {
+	*x = RemoveCardRequest{}
+	mi := &file_auth_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveCardRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveCardRequest) ProtoMessage() {}
+
+func (x *RemoveCardRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveCardRequest.ProtoReflect.Descriptor instead.
+func (*RemoveCardRequest) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *RemoveCardRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *RemoveCardRequest) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
+}
+
+type RemoveCardResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Msg           string                 `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveCardResponse) Reset() {
+	*x = RemoveCardResponse{}
+	mi := &file_auth_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveCardResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveCardResponse) ProtoMessage() {}
+
+func (x *RemoveCardResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveCardResponse.ProtoReflect.Descriptor instead.
+func (*RemoveCardResponse) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *RemoveCardResponse) GetMsg() string {
+	if x != nil {
+		return x.Msg
+	}
+	return ""
+}
+
+type DeleteCardsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Uid           string                 `protobuf:"bytes,1,opt,name=uid,proto3" json:"uid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteCardsRequest) Reset() {
+	*x = DeleteCardsRequest{}
+	mi := &file_auth_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteCardsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteCardsRequest) ProtoMessage() {}
+
+func (x *DeleteCardsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteCardsRequest.ProtoReflect.Descriptor instead.
+func (*DeleteCardsRequest) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *DeleteCardsRequest) GetUid() string {
+	if x != nil {
+		return x.Uid
+	}
+	return ""
+}
+
+type DeleteCardsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Msg           string                 `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteCardsResponse) Reset() {
+	*x = DeleteCardsResponse{}
+	mi := &file_auth_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteCardsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteCardsResponse) ProtoMessage() {}
+
+func (x *DeleteCardsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteCardsResponse.ProtoReflect.Descriptor instead.
+func (*DeleteCardsResponse) Descriptor() ([]byte, []int) {
+	return file_auth_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *DeleteCardsResponse) GetMsg() string {
 	if x != nil {
 		return x.Msg
 	}
@@ -690,7 +1135,13 @@ const file_auth_proto_rawDesc = "" +
 	"\x04User\x12\x1a\n" +
 	"\busername\x18\x01 \x01(\tR\busername\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x14\n" +
-	"\x05email\x18\x03 \x01(\tR\x05email\"-\n" +
+	"\x05email\x18\x03 \x01(\tR\x05email\"|\n" +
+	"\x04Card\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
+	"\x06number\x18\x02 \x01(\tR\x06number\x12\x14\n" +
+	"\x05brand\x18\x03 \x01(\tR\x05brand\x12\x1b\n" +
+	"\texp_month\x18\x04 \x01(\x05R\bexpMonth\x12\x19\n" +
+	"\bexp_year\x18\x05 \x01(\x05R\aexpYear\"-\n" +
 	"\rSignUpRequest\x12\x1c\n" +
 	"\x04user\x18\x01 \x01(\v2\b.pb.UserR\x04user\"y\n" +
 	"\x0eSignUpResponse\x12\x0e\n" +
@@ -723,6 +1174,24 @@ const file_auth_proto_rawDesc = "" +
 	"\x11DeleteUserRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\"&\n" +
 	"\x12DeleteUserResponse\x12\x10\n" +
+	"\x03msg\x18\x01 \x01(\tR\x03msg\"@\n" +
+	"\x0eAddCardRequest\x12\x10\n" +
+	"\x03uid\x18\x01 \x01(\tR\x03uid\x12\x1c\n" +
+	"\x04card\x18\x02 \x01(\v2\b.pb.CardR\x04card\"/\n" +
+	"\x0fAddCardResponse\x12\x1c\n" +
+	"\x04card\x18\x01 \x03(\v2\b.pb.CardR\x04card\"#\n" +
+	"\x0fGetCardsRequest\x12\x10\n" +
+	"\x03uid\x18\x01 \x01(\tR\x03uid\"0\n" +
+	"\x10GetCardsResponse\x12\x1c\n" +
+	"\x04card\x18\x01 \x03(\v2\b.pb.CardR\x04card\"5\n" +
+	"\x11RemoveCardRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x10\n" +
+	"\x03uid\x18\x02 \x01(\tR\x03uid\"&\n" +
+	"\x12RemoveCardResponse\x12\x10\n" +
+	"\x03msg\x18\x01 \x01(\tR\x03msg\"&\n" +
+	"\x12DeleteCardsRequest\x12\x10\n" +
+	"\x03uid\x18\x01 \x01(\tR\x03uid\"'\n" +
+	"\x13DeleteCardsResponse\x12\x10\n" +
 	"\x03msg\x18\x01 \x01(\tR\x03msg2\xd4\x02\n" +
 	"\vAuthService\x12/\n" +
 	"\x06SignUp\x12\x11.pb.SignUpRequest\x1a\x12.pb.SignUpResponse\x12/\n" +
@@ -732,7 +1201,13 @@ const file_auth_proto_rawDesc = "" +
 	"\n" +
 	"UpdateUser\x12\x15.pb.UpdateUserRequest\x1a\x16.pb.UpdateUserResponse\x12;\n" +
 	"\n" +
-	"DeleteUser\x12\x15.pb.DeleteUserRequest\x1a\x16.pb.DeleteUserResponseB\x06Z\x04./pbb\x06proto3"
+	"DeleteUser\x12\x15.pb.DeleteUserRequest\x1a\x16.pb.DeleteUserResponse2\xf5\x01\n" +
+	"\vCardService\x122\n" +
+	"\aAddCard\x12\x12.pb.AddCardRequest\x1a\x13.pb.AddCardResponse\x125\n" +
+	"\bGetCards\x12\x13.pb.GetCardsRequest\x1a\x14.pb.GetCardsResponse\x12;\n" +
+	"\n" +
+	"RemoveCard\x12\x15.pb.RemoveCardRequest\x1a\x16.pb.RemoveCardResponse\x12>\n" +
+	"\vDeleteCards\x12\x16.pb.DeleteCardsRequest\x1a\x17.pb.DeleteCardsResponseB\x06Z\x04./pbb\x06proto3"
 
 var (
 	file_auth_proto_rawDescOnce sync.Once
@@ -746,44 +1221,64 @@ func file_auth_proto_rawDescGZIP() []byte {
 	return file_auth_proto_rawDescData
 }
 
-var file_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_auth_proto_goTypes = []any{
-	(*User)(nil),               // 0: pb.User
-	(*SignUpRequest)(nil),      // 1: pb.SignUpRequest
-	(*SignUpResponse)(nil),     // 2: pb.SignUpResponse
-	(*SignInRequest)(nil),      // 3: pb.SignInRequest
-	(*SignInResponse)(nil),     // 4: pb.SignInResponse
-	(*SignOutRequest)(nil),     // 5: pb.SignOutRequest
-	(*SignOutResponse)(nil),    // 6: pb.SignOutResponse
-	(*NewTokenRequest)(nil),    // 7: pb.NewTokenRequest
-	(*NewTokenResponse)(nil),   // 8: pb.NewTokenResponse
-	(*UpdateUserRequest)(nil),  // 9: pb.UpdateUserRequest
-	(*UpdateUserResponse)(nil), // 10: pb.UpdateUserResponse
-	(*DeleteUserRequest)(nil),  // 11: pb.DeleteUserRequest
-	(*DeleteUserResponse)(nil), // 12: pb.DeleteUserResponse
+	(*User)(nil),                // 0: pb.User
+	(*Card)(nil),                // 1: pb.Card
+	(*SignUpRequest)(nil),       // 2: pb.SignUpRequest
+	(*SignUpResponse)(nil),      // 3: pb.SignUpResponse
+	(*SignInRequest)(nil),       // 4: pb.SignInRequest
+	(*SignInResponse)(nil),      // 5: pb.SignInResponse
+	(*SignOutRequest)(nil),      // 6: pb.SignOutRequest
+	(*SignOutResponse)(nil),     // 7: pb.SignOutResponse
+	(*NewTokenRequest)(nil),     // 8: pb.NewTokenRequest
+	(*NewTokenResponse)(nil),    // 9: pb.NewTokenResponse
+	(*UpdateUserRequest)(nil),   // 10: pb.UpdateUserRequest
+	(*UpdateUserResponse)(nil),  // 11: pb.UpdateUserResponse
+	(*DeleteUserRequest)(nil),   // 12: pb.DeleteUserRequest
+	(*DeleteUserResponse)(nil),  // 13: pb.DeleteUserResponse
+	(*AddCardRequest)(nil),      // 14: pb.AddCardRequest
+	(*AddCardResponse)(nil),     // 15: pb.AddCardResponse
+	(*GetCardsRequest)(nil),     // 16: pb.GetCardsRequest
+	(*GetCardsResponse)(nil),    // 17: pb.GetCardsResponse
+	(*RemoveCardRequest)(nil),   // 18: pb.RemoveCardRequest
+	(*RemoveCardResponse)(nil),  // 19: pb.RemoveCardResponse
+	(*DeleteCardsRequest)(nil),  // 20: pb.DeleteCardsRequest
+	(*DeleteCardsResponse)(nil), // 21: pb.DeleteCardsResponse
 }
 var file_auth_proto_depIdxs = []int32{
 	0,  // 0: pb.SignUpRequest.user:type_name -> pb.User
 	0,  // 1: pb.SignUpResponse.user:type_name -> pb.User
 	0,  // 2: pb.SignInResponse.user:type_name -> pb.User
 	0,  // 3: pb.UpdateUserRequest.user:type_name -> pb.User
-	1,  // 4: pb.AuthService.SignUp:input_type -> pb.SignUpRequest
-	3,  // 5: pb.AuthService.SignIn:input_type -> pb.SignInRequest
-	5,  // 6: pb.AuthService.SignOut:input_type -> pb.SignOutRequest
-	7,  // 7: pb.AuthService.NewToken:input_type -> pb.NewTokenRequest
-	9,  // 8: pb.AuthService.UpdateUser:input_type -> pb.UpdateUserRequest
-	11, // 9: pb.AuthService.DeleteUser:input_type -> pb.DeleteUserRequest
-	2,  // 10: pb.AuthService.SignUp:output_type -> pb.SignUpResponse
-	4,  // 11: pb.AuthService.SignIn:output_type -> pb.SignInResponse
-	6,  // 12: pb.AuthService.SignOut:output_type -> pb.SignOutResponse
-	8,  // 13: pb.AuthService.NewToken:output_type -> pb.NewTokenResponse
-	10, // 14: pb.AuthService.UpdateUser:output_type -> pb.UpdateUserResponse
-	12, // 15: pb.AuthService.DeleteUser:output_type -> pb.DeleteUserResponse
-	10, // [10:16] is the sub-list for method output_type
-	4,  // [4:10] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	1,  // 4: pb.AddCardRequest.card:type_name -> pb.Card
+	1,  // 5: pb.AddCardResponse.card:type_name -> pb.Card
+	1,  // 6: pb.GetCardsResponse.card:type_name -> pb.Card
+	2,  // 7: pb.AuthService.SignUp:input_type -> pb.SignUpRequest
+	4,  // 8: pb.AuthService.SignIn:input_type -> pb.SignInRequest
+	6,  // 9: pb.AuthService.SignOut:input_type -> pb.SignOutRequest
+	8,  // 10: pb.AuthService.NewToken:input_type -> pb.NewTokenRequest
+	10, // 11: pb.AuthService.UpdateUser:input_type -> pb.UpdateUserRequest
+	12, // 12: pb.AuthService.DeleteUser:input_type -> pb.DeleteUserRequest
+	14, // 13: pb.CardService.AddCard:input_type -> pb.AddCardRequest
+	16, // 14: pb.CardService.GetCards:input_type -> pb.GetCardsRequest
+	18, // 15: pb.CardService.RemoveCard:input_type -> pb.RemoveCardRequest
+	20, // 16: pb.CardService.DeleteCards:input_type -> pb.DeleteCardsRequest
+	3,  // 17: pb.AuthService.SignUp:output_type -> pb.SignUpResponse
+	5,  // 18: pb.AuthService.SignIn:output_type -> pb.SignInResponse
+	7,  // 19: pb.AuthService.SignOut:output_type -> pb.SignOutResponse
+	9,  // 20: pb.AuthService.NewToken:output_type -> pb.NewTokenResponse
+	11, // 21: pb.AuthService.UpdateUser:output_type -> pb.UpdateUserResponse
+	13, // 22: pb.AuthService.DeleteUser:output_type -> pb.DeleteUserResponse
+	15, // 23: pb.CardService.AddCard:output_type -> pb.AddCardResponse
+	17, // 24: pb.CardService.GetCards:output_type -> pb.GetCardsResponse
+	19, // 25: pb.CardService.RemoveCard:output_type -> pb.RemoveCardResponse
+	21, // 26: pb.CardService.DeleteCards:output_type -> pb.DeleteCardsResponse
+	17, // [17:27] is the sub-list for method output_type
+	7,  // [7:17] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_auth_proto_init() }
@@ -797,9 +1292,9 @@ func file_auth_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_auth_proto_rawDesc), len(file_auth_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   22,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_auth_proto_goTypes,
 		DependencyIndexes: file_auth_proto_depIdxs,

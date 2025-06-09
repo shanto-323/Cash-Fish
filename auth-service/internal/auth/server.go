@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 
 	authservice "auth-service/internal"
@@ -11,12 +12,22 @@ import (
 	"google.golang.org/grpc"
 )
 
+const (
+	GRPC_SERVER = "AUTH_GRPC_SERVER"
+)
+
 type grpcAuthServer struct {
 	service authservice.Service
 	pb.UnimplementedAuthServiceServer
 }
 
 func NewGrpcServer(s authservice.Service, p string) error {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(GRPC_SERVER, err)
+		}
+	}()
 	port := fmt.Sprintf(":%s", p)
 	ls, err := net.Listen("tcp", port)
 	if err != nil {
@@ -29,8 +40,15 @@ func NewGrpcServer(s authservice.Service, p string) error {
 }
 
 func (g *grpcAuthServer) SignUp(ctx context.Context, r *pb.SignUpRequest) (*pb.SignUpResponse, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(GRPC_SERVER, err)
+		}
+	}()
 	resp, err := g.service.SignUp(ctx, r.User.Username, r.User.Password, r.User.Email)
 	if err != nil {
+		log.Println(err)
 		return nil, err
 	}
 	return &pb.SignUpResponse{
@@ -46,6 +64,12 @@ func (g *grpcAuthServer) SignUp(ctx context.Context, r *pb.SignUpRequest) (*pb.S
 }
 
 func (g *grpcAuthServer) SignIn(ctx context.Context, r *pb.SignInRequest) (*pb.SignInResponse, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(GRPC_SERVER, err, r.Password)
+		}
+	}()
 	resp, err := g.service.SignIn(ctx, r.Email, r.Password)
 	if err != nil {
 		return nil, err
@@ -63,7 +87,13 @@ func (g *grpcAuthServer) SignIn(ctx context.Context, r *pb.SignInRequest) (*pb.S
 }
 
 func (g *grpcAuthServer) SignOut(ctx context.Context, r *pb.SignOutRequest) (*pb.SignOutResponse, error) {
-	err := g.service.SignOut(ctx, r.Id)
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(GRPC_SERVER, err)
+		}
+	}()
+	err = g.service.SignOut(ctx, r.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +104,13 @@ func (g *grpcAuthServer) SignOut(ctx context.Context, r *pb.SignOutRequest) (*pb
 }
 
 func (g *grpcAuthServer) UpdateUser(ctx context.Context, r *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
-	if err := g.service.UpdateUser(ctx, authservice.UserModel{
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(GRPC_SERVER, err)
+		}
+	}()
+	if err = g.service.UpdateUser(ctx, authservice.UserModel{
 		ID:       r.Id,
 		Username: r.User.Username,
 		Password: r.User.Password,
@@ -89,7 +125,13 @@ func (g *grpcAuthServer) UpdateUser(ctx context.Context, r *pb.UpdateUserRequest
 }
 
 func (g *grpcAuthServer) DeleteUser(ctx context.Context, r *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
-	if err := g.service.DeleteUser(ctx, r.Id); err != nil {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(GRPC_SERVER, err)
+		}
+	}()
+	if err = g.service.DeleteUser(ctx, r.Id); err != nil {
 		return nil, err
 	}
 
@@ -99,6 +141,12 @@ func (g *grpcAuthServer) DeleteUser(ctx context.Context, r *pb.DeleteUserRequest
 }
 
 func (g *grpcAuthServer) NewToken(ctx context.Context, r *pb.NewTokenRequest) (*pb.NewTokenResponse, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(GRPC_SERVER, err)
+		}
+	}()
 	resp, err := g.service.NewToken(ctx, r.Id, r.Token)
 	if err != nil {
 		return nil, err

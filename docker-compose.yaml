@@ -7,9 +7,9 @@ services:
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: shanto323
     volumes:
-      - ./wallet-service/up.sql:/docker-entrypoint-initdb.d/up.sql
+      - ./auth-service/up.sql:/docker-entrypoint-initdb.d/up.sql
     ports:
-      - "5432:5432"
+      - 5432:5432
     restart: unless-stopped
 
   auth:
@@ -28,8 +28,10 @@ services:
       dockerfile: gateway/app.dockerfile
     env_file:
       - .env
+    depends_on: 
+      - auth
     ports:
-      - "8080:8080"
+      - 8080:8080
     restart: on-failure
 
   

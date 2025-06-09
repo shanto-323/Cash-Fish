@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -19,9 +20,9 @@ type AuthController struct {
 }
 
 func NewAuthController(router *mux.Router, authClient *auth.AuthClient) *AuthController {
-	router.PathPrefix("/auth").Subrouter()
+	authRouter := router.PathPrefix("/auth").Subrouter()
 	return &AuthController{
-		router:     router,
+		router:     authRouter,
 		authClient: authClient,
 	}
 }
@@ -31,10 +32,10 @@ func (c *AuthController) RegisterRoutes() {
 	c.router.HandleFunc("/signin", middlerware.HandleFunc(c.SignIn)).Methods("POST")
 	c.router.HandleFunc("/token", middlerware.HandleFunc(c.NewToken)).Methods("GET")
 
-	protected := c.router.NewRoute().Subrouter()
+	protected := c.router.PathPrefix("/user").Subrouter()
 	protected.Use(middlerware.JwtMiddleware)
-	protected.HandleFunc("signout", middlerware.HandleFunc(c.SignOut)).Methods("POST")
-	protected.HandleFunc("delete", middlerware.HandleFunc(c.DeleteUser)).Methods("DELETE")
+	protected.HandleFunc("/signout", middlerware.HandleFunc(c.SignOut)).Methods("POST")
+	protected.HandleFunc("/delete", middlerware.HandleFunc(c.DeleteUser)).Methods("DELETE")
 }
 
 func (c *AuthController) SignUp(w http.ResponseWriter, r *http.Request) error {
@@ -46,7 +47,7 @@ func (c *AuthController) SignUp(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	resp, err := c.authClient.AuthClientSignUP(ctx, user.Username, user.Password, user.Email)
+	resp, err := c.authClient.AuthClientSignUP(ctx, user.Username, user.Email, user.Password)
 	if err != nil {
 		return err
 	}
@@ -94,7 +95,7 @@ func (c *AuthController) SignOut(w http.ResponseWriter, r *http.Request) error {
 	id := r.URL.Query().Get("id")
 	resp, err := c.authClient.AuthClientSignOut(ctx, id)
 	if err != nil {
-		return err
+		return fmt.Errorf("signout error:%s", err)
 	}
 	return pkg.WriteJson(w, http.StatusOK, *resp)
 }
@@ -106,7 +107,7 @@ func (c *AuthController) DeleteUser(w http.ResponseWriter, r *http.Request) erro
 	id := r.URL.Query().Get("id")
 	resp, err := c.authClient.AuthClientDeleteUser(ctx, id)
 	if err != nil {
-		return err
+		return fmt.Errorf("signout error:%s", err)
 	}
 	return pkg.WriteJson(w, http.StatusOK, *resp)
 }

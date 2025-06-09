@@ -6,7 +6,6 @@ import (
 
 	authservice "auth-service/internal"
 	auth "auth-service/internal/auth"
-	card "auth-service/internal/card"
 
 	"github.com/kelseyhightower/envconfig"
 	"github.com/tinrab/retry"
@@ -31,21 +30,13 @@ func main() {
 		func(_ int) error {
 			repository, err = authservice.NewRepository(cfg.DatabaseDsn)
 			if err != nil {
+				log.Println(err)
 				return err
 			}
 			return nil
 		},
 	)
 	service := authservice.NewService(repository)
-	go func() {
-		if err := card.NewGrpcServer(service, cfg.CardServiceIpAddr); err != nil {
-			log.Fatalf("card service failed: %v", err)
-		}
-	}()
-	go func() {
-		if err := auth.NewGrpcServer(service, cfg.AuthServiceIpAddr); err != nil {
-			log.Fatalf("auth service failed: %v", err)
-		}
-	}()
-	select {}
+	log.Println("auth server running on port", cfg.AuthServiceIpAddr)
+	log.Fatal(auth.NewGrpcServer(service, cfg.AuthServiceIpAddr))
 }

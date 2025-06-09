@@ -3,6 +3,13 @@ package authservice
 import (
 	"context"
 	"database/sql"
+	"log"
+
+	_ "github.com/lib/pq"
+)
+
+const (
+	LOCATION = "DB_REPOSITORY"
 )
 
 type Repository interface {
@@ -23,6 +30,12 @@ type userDatabase struct {
 }
 
 func NewRepository(dsn string) (Repository, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
@@ -35,29 +48,42 @@ func NewRepository(dsn string) (Repository, error) {
 }
 
 func (r *userDatabase) NewUser(ctx context.Context, user UserModel) error {
+	var err error
+	defer func() {
+		log.Println(LOCATION, user)
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	q := `
 		INSERT INTO users(
 			id,
 			username,
 			password,
 			email,
-			r_token,
+			r_token
 		) VALUES ($1,$2,$3,$4,$5)
 	`
-	_, err := r.db.ExecContext(ctx, q, user.ID, user.Username, user.Password, user.Email, user.RefreshToken)
+	_, err = r.db.ExecContext(ctx, q, user.ID, user.Username, user.Password, user.Email, user.RefreshToken)
 	return err
 }
 
 func (r *userDatabase) GetUser(ctx context.Context, id string) (*UserResponseModel, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	var q string           // QUERY STRING
 	user := new(UserModel) // USER FIELD
 	user.ID = id
 	q = `
-		SELECT username, password, email, email,r_token
+		SELECT username, password, email,r_token
 		FROM users 
 		WHERE id = $1 
 	`
-	err := r.db.QueryRowContext(ctx, q, user.ID).Scan(
+	err = r.db.QueryRowContext(ctx, q, id).Scan(
 		&user.Username,
 		&user.Password,
 		&user.Email,
@@ -67,10 +93,10 @@ func (r *userDatabase) GetUser(ctx context.Context, id string) (*UserResponseMod
 		return nil, err
 	}
 
-	cards, err := r.GetCardsById(ctx, id)
-	if err != nil {
-		return nil, err
-	}
+	// cards, err := r.GetCardsById(ctx, id)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	return &UserResponseModel{
 		ID:       user.ID,
 		Username: user.Username,
@@ -79,22 +105,25 @@ func (r *userDatabase) GetUser(ctx context.Context, id string) (*UserResponseMod
 		Token: TokenMetadata{
 			RefreshToken: user.RefreshToken,
 		},
-		Cards: *cards,
+		Cards: nil,
 	}, nil
 }
 
 func (r *userDatabase) GetUserByEmail(ctx context.Context, email string) (*UserResponseModel, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	user := new(UserModel) // USER FIELD
 	q := `
-		SELECT username, password, email, email,r_token
+		SELECT id
 		FROM users 
-		WHERE email = $1 
-	`
-	err := r.db.QueryRowContext(ctx, q, user.Email).Scan(
-		&user.Username,
-		&user.Password,
-		&user.Email,
-		&user.RefreshToken,
+		WHERE email = $1
+ 	`
+	err = r.db.QueryRowContext(ctx, q, email).Scan(
+		&user.ID,
 	)
 	if err != nil {
 		return nil, err
@@ -103,50 +132,75 @@ func (r *userDatabase) GetUserByEmail(ctx context.Context, email string) (*UserR
 }
 
 func (r *userDatabase) UpdateUser(ctx context.Context, user UserModel) error {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	q := `
 		UPDATE users
 		SET
 			username = $2,
 			password = $3,
 			email = $4,
-			r_token = $5,
+			r_token = $5
 		WHERE id = $1	
 	`
-	_, err := r.db.ExecContext(ctx, q, user.ID, user.Username, user.Password, user.Email, user.RefreshToken)
+	_, err = r.db.ExecContext(ctx, q, user.ID, user.Username, user.Password, user.Email, user.RefreshToken)
 	return err
 }
 
 func (r *userDatabase) UpdateToken(ctx context.Context, id string, token string) error {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	q := `
 		UPDATE users
-		SET r_token = $2,
+		SET r_token = $2
 		WHERE id = $1	
 	`
-	_, err := r.db.ExecContext(ctx, q, id, token)
+	_, err = r.db.ExecContext(ctx, q, id, token)
 	return err
 }
 
 func (r *userDatabase) DeleteUser(ctx context.Context, id string) error {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	q := `
 		DELETE FROM users
 		WHERE id = $1
 	`
-	_, err := r.db.ExecContext(ctx, q, id)
+	_, err = r.db.ExecContext(ctx, q, id)
 	return err
 }
 
 // CARD SECTION
 func (r *userDatabase) NewCard(ctx context.Context, card CardMetadata) (*[]CardsResponseMetadata, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	q := `
 		INSERT INTO cards(
 			user_id,
 			card_number,
 			brand,
 			expiry_month,
-			expiry_year,
+			expiry_year
 		) VALUES ($1,$2,$3,$4,$5)
 	`
-	if _, err := r.db.ExecContext(ctx, q, card.UID, card.Number, card.Brand, card.ExpiryMonth, card.ExpiryYear); err != nil {
+	if _, err = r.db.ExecContext(ctx, q, card.UID, card.Number, card.Brand, card.ExpiryMonth, card.ExpiryYear); err != nil {
+		log.Println(err)
 		return nil, err
 	}
 
@@ -154,28 +208,34 @@ func (r *userDatabase) NewCard(ctx context.Context, card CardMetadata) (*[]Cards
 }
 
 func (r *userDatabase) GetCardsById(ctx context.Context, uid string) (*[]CardsResponseMetadata, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	cards := new([]CardsResponseMetadata) // CARD FIELD
 	q := `
 		SELECT id, card_number, brand, expiry_month, expiry_year
 		FROM cards 
 		WHERE user_id = $1 
 	`
-	cardRows, txErr := r.db.QueryContext(ctx, q, uid)
-	if txErr != nil {
-		return nil, txErr
+	cardRows, err := r.db.QueryContext(ctx, q, uid)
+	if err != nil {
+		return nil, err
 	}
 	defer cardRows.Close()
 	for cardRows.Next() {
 		c := CardsResponseMetadata{}
-		txErr = cardRows.Scan(
+		err = cardRows.Scan(
 			&c.ID,
 			&c.Number,
 			&c.Brand,
 			&c.ExpiryMonth,
 			&c.ExpiryYear,
 		)
-		if txErr != nil {
-			return nil, txErr
+		if err != nil {
+			return nil, err
 		}
 		c.Number = hideNumber(c.Number)
 		*cards = append(*cards, c)
@@ -185,20 +245,32 @@ func (r *userDatabase) GetCardsById(ctx context.Context, uid string) (*[]CardsRe
 }
 
 func (r *userDatabase) DeleteAllCard(ctx context.Context, uid string) error {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	q := `
 		DELETE FROM cards
 		WHERE user_id = $1
 	`
-	_, err := r.db.ExecContext(ctx, q, uid)
+	_, err = r.db.ExecContext(ctx, q, uid)
 	return err
 }
 
 func (r *userDatabase) DeleteCard(ctx context.Context, uid string, id string) error { // ID -> CARD_ID .. UID -> USER_ID
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOCATION, err)
+		}
+	}()
 	q := `
 		DELETE FROM cards
 		WHERE user_id = $1 AND id = $2
 	`
-	_, err := r.db.ExecContext(ctx, q, uid, id)
+	_, err = r.db.ExecContext(ctx, q, uid, id)
 	return err
 }
 

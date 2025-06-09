@@ -35,6 +35,7 @@ func main() {
 			authClient, err = auth.NewAuthClient(cfg.AuthServiceUrl)
 			cardClient, err = card.NewCardhClient(cfg.CardServiceUrl)
 			if err != nil {
+				log.Println(err)
 				return err
 			}
 			return nil
@@ -45,5 +46,5 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	server.StartServer()
+	log.Fatal(server.StartServer())
 }

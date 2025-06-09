@@ -3,6 +3,7 @@ package authservice
 import (
 	"context"
 	"fmt"
+	"log"
 
 	pkg "auth-service/pkg"
 
@@ -23,6 +24,10 @@ type Service interface {
 	RemoveCard(ctx context.Context, uid string, number string) error
 }
 
+const (
+	LOC_SERVICE = "REPOSITORY_SERVICE"
+)
+
 type authService struct {
 	repo Repository
 }
@@ -34,6 +39,12 @@ func NewService(repo Repository) Service {
 }
 
 func (s *authService) SignUp(ctx context.Context, username, password, email string) (*UserResponseModel, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOC_SERVICE, err)
+		}
+	}()
 	user := UserModel{
 		Username: username,
 		Email:    email,
@@ -51,6 +62,7 @@ func (s *authService) SignUp(ctx context.Context, username, password, email stri
 	user.RefreshToken = r_token
 
 	if err = s.repo.NewUser(ctx, user); err != nil {
+		log.Println("user")
 		return nil, err
 	}
 
@@ -68,6 +80,12 @@ func (s *authService) SignUp(ctx context.Context, username, password, email stri
 }
 
 func (s *authService) SignIn(ctx context.Context, email, password string) (*UserResponseModel, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOC_SERVICE, err)
+		}
+	}()
 	resp, err := s.repo.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -88,13 +106,10 @@ func (s *authService) SignIn(ctx context.Context, email, password string) (*User
 		return nil, err
 	}
 
-	s.UpdateUser(ctx, UserModel{
-		ID:           resp.ID,
-		Username:     resp.Username,
-		Password:     resp.Password,
-		Email:        resp.Email,
-		RefreshToken: r_token,
-	})
+	err = s.repo.UpdateToken(ctx, resp.ID, r_token)
+	if err != nil {
+		return nil, err
+	}
 
 	resp.Token.Token = token
 	resp.Token.RefreshToken = r_token
@@ -106,6 +121,12 @@ func (s *authService) SignOut(ctx context.Context, id string) error {
 }
 
 func (s *authService) NewToken(ctx context.Context, id string, refreshTtoken string) (string, error) {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOC_SERVICE, err)
+		}
+	}()
 	user, err := s.repo.GetUser(ctx, id)
 	if err != nil || user == nil {
 		return "", fmt.Errorf("user not found")
@@ -122,9 +143,18 @@ func (s *authService) NewToken(ctx context.Context, id string, refreshTtoken str
 }
 
 func (s *authService) UpdateUser(ctx context.Context, user UserModel) error {
+	var err error
+	defer func() {
+		if err != nil {
+			log.Println(LOC_SERVICE, err)
+		}
+	}()
 	resp, err := s.repo.GetUser(ctx, user.ID)
 	if err != nil {
 		return err
+	}
+	if resp.ID == "" {
+		return fmt.Errorf("user not found")
 	}
 
 	if mutationHelper(user.Username) {
