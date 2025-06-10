@@ -34,6 +34,10 @@ func main() {
 		2*time.Second,
 		func(i int) error {
 			authClient, err = auth.NewAuthClient(cfg.AuthServiceUrl)
+			if err != nil {
+				log.Println(err)
+				return err
+			}
 			cardClient, err = card.NewCardhClient(cfg.CardServiceUrl)
 			if err != nil {
 				log.Println(err)

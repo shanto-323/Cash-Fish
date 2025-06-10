@@ -9,6 +9,7 @@ import (
 
 	"gateway/internal/middlerware"
 	"gateway/internal/service/auth"
+	"gateway/internal/service/producer"
 	"gateway/pkg"
 
 	"github.com/gorilla/mux"
@@ -17,13 +18,15 @@ import (
 type AuthController struct {
 	router     *mux.Router
 	authClient *auth.AuthClient
+	Producer   *producer.Producer
 }
 
-func NewAuthController(router *mux.Router, authClient *auth.AuthClient) *AuthController {
+func NewAuthController(router *mux.Router, authClient *auth.AuthClient, producer *producer.Producer) *AuthController {
 	authRouter := router.PathPrefix("/auth").Subrouter()
 	return &AuthController{
 		router:     authRouter,
 		authClient: authClient,
+		Producer:   producer,
 	}
 }
 
@@ -59,6 +62,10 @@ func (c *AuthController) SignUp(w http.ResponseWriter, r *http.Request) error {
 			Path:  "/api/v1/",
 		},
 	)
+
+	if err := c.Producer.PushToQueue(user); err != nil {
+		return err
+	}
 
 	return pkg.WriteJson(w, http.StatusOK, resp)
 }
