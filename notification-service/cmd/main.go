@@ -22,11 +22,11 @@ func main() {
 		log.Fatal("could not get env variabls", err)
 	}
 
-	var consumer *notificationservice.Consumer
+	var signUpConsumer *notificationservice.Consumer
 	retry.ForeverSleep(
 		2*time.Second,
 		func(_ int) error {
-			consumer, err = notificationservice.NewConsumer([]string{cfg.BrokerUrl})
+			signUpConsumer, err = notificationservice.NewConsumer([]string{cfg.BrokerUrl})
 			if err != nil {
 				return err
 			}
@@ -36,7 +36,7 @@ func main() {
 
 	forever := make(chan interface{})
 	go func() {
-		log.Fatal(consumer.OutputMessage(cfg.UserCreationTopic))
+		log.Fatal(signUpConsumer.OutputMessage(cfg.UserCreationTopic))
 	}()
 	<-forever
 }

@@ -36,7 +36,7 @@ func (c *Consumer) OutputMessage(topic string) error {
 			log.Println(err)
 			continue
 		case msg := <-consumer.Messages():
-			log.Println("Received message From:", topic, "MSG:", string(msg.Value))
+			Notifier(msg.Value, topic)
 		}
 	}
 }
