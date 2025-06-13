@@ -16,17 +16,21 @@ import (
 )
 
 type AuthController struct {
-	router     *mux.Router
-	authClient *auth.AuthClient
-	Producer   *producer.Producer
+	router            *mux.Router
+	authClient        *auth.AuthClient
+	Producer          *producer.Producer
+	SignUpEventTopic  string
+	SignUpEntityTopic string
 }
 
-func NewAuthController(router *mux.Router, authClient *auth.AuthClient, producer *producer.Producer) *AuthController {
+func NewAuthController(router *mux.Router, authClient *auth.AuthClient, producer *producer.Producer, signUpEvent, signUpEntity string) *AuthController {
 	authRouter := router.PathPrefix("/auth").Subrouter()
 	return &AuthController{
-		router:     authRouter,
-		authClient: authClient,
-		Producer:   producer,
+		router:            authRouter,
+		authClient:        authClient,
+		Producer:          producer,
+		SignUpEventTopic:  signUpEvent,
+		SignUpEntityTopic: signUpEntity,
 	}
 }
 
@@ -63,7 +67,10 @@ func (c *AuthController) SignUp(w http.ResponseWriter, r *http.Request) error {
 		},
 	)
 
-	if err := c.Producer.PushToQueue(user); err != nil {
+	if err := c.Producer.PushToQueue(user, c.SignUpEventTopic); err != nil {
+		return err
+	}
+	if err := c.Producer.PushToQueue(resp.ID, c.SignUpEntityTopic); err != nil {
 		return err
 	}
 

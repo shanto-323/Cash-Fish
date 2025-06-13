@@ -7,7 +7,8 @@ services:
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: shanto323
     volumes:
-      - ./auth-service/up.sql:/docker-entrypoint-initdb.d/up.sql
+      - ./auth-service/up.sql:/docker-entrypoint-initdb.d/1up.sql
+      - ./settlement/up.sql:/docker-entrypoint-initdb.d/2up.sql
     ports:
       - 5432:5432
     restart: unless-stopped
@@ -22,6 +23,15 @@ services:
       - 9093:9093
     volumes:
       - kraft:/bitnami/kafka
+    restart: unless-stopped
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    platform: linux/amd64
+    container_name: mailhog-service-1
+    ports:
+      - 1025:1025
+      - 8025:8025
     restart: unless-stopped
 
   auth:
@@ -51,6 +61,17 @@ services:
     build:
       context: .
       dockerfile: notification-service/app.dockerfile
+    env_file:
+      - .env
+    depends_on:
+      - kafka
+      - mailhog
+    restart: on-failure
+
+  settlement:
+    build:
+      context: .
+      dockerfile: settlement/app.dockerfile
     env_file:
       - .env
     depends_on:

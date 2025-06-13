@@ -19,6 +19,7 @@ import (
 type config struct {
 	BrokerUrl         []string `envconfig:"BROKER_URL"`
 	UserCreationTopic string   `envconfig:"USER_CREATION_TOPIC"`
+	UserEntityTopic   string   `envconfig:"USER_ENTITY_TOPIC"`
 }
 
 type Server struct {
@@ -45,7 +46,7 @@ func (s *Server) StartServer() error {
 	retry.ForeverSleep(
 		2*time.Second,
 		func(_ int) error {
-			producer, err = p.NewProducer(cfg.BrokerUrl, cfg.UserCreationTopic)
+			producer, err = p.NewProducer(cfg.BrokerUrl)
 			if err != nil {
 				log.Println(err)
 				return err
@@ -57,7 +58,7 @@ func (s *Server) StartServer() error {
 	router := mux.NewRouter()
 	apiRouter := router.PathPrefix("/api/v1").Subrouter()
 
-	authRouter := controller.NewAuthController(apiRouter, s.authClient, producer)
+	authRouter := controller.NewAuthController(apiRouter, s.authClient, producer, cfg.UserCreationTopic, cfg.UserEntityTopic)
 	authRouter.RegisterRoutes()
 
 	cardRouter := controller.NewCardController(apiRouter, s.cardClient)

@@ -6,6 +6,6 @@
 - ***gRPC*** (API Layer)
 - ***PostgreSQL*** (Primary Database)
 - ***Redis*** (Idempotency & Caching)
-- ***RabbitMQ*** (Event Broker)
+- ***Kafka*** (Event Broker)
 
 ![overview](asset/diagram.png)

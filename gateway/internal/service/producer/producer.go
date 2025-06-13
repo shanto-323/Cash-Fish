@@ -8,10 +8,9 @@ import (
 
 type Producer struct {
 	producer sarama.SyncProducer
-	topic    string
 }
 
-func NewProducer(url []string, topic string) (*Producer, error) {
+func NewProducer(url []string) (*Producer, error) {
 	cfg := sarama.NewConfig()
 	cfg.Producer.Return.Successes = true
 	cfg.Producer.RequiredAcks = sarama.WaitForAll
@@ -23,20 +22,17 @@ func NewProducer(url []string, topic string) (*Producer, error) {
 	}
 	return &Producer{
 		producer: producer,
-		topic:    topic,
 	}, nil
 }
 
-func (p *Producer) PushToQueue(message any) error {
-	defer p.producer.Close()
-
+func (p *Producer) PushToQueue(message any, topic string) error {
 	msg, err := json.Marshal(message)
 	if err != nil {
 		return err
 	}
 
 	newMessage := sarama.ProducerMessage{
-		Topic: p.topic,
+		Topic: topic,
 		Value: sarama.StringEncoder(msg),
 	}
 	_, _, err = p.producer.SendMessage(&newMessage)
